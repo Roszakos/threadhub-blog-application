@@ -14,6 +14,9 @@
                                 {{ __('Section ') }}
                                 <span x-text="i"></span>
                             </div>
+                            <x-secondary-button class="!bg-gray-300 hover:!bg-gray-400" x-on:click="addSection(i)">
+                                + Add Section
+                            </x-secondary-button>
                         </div>
                         <x-input-label value="Subtitle" class="py-2" />
                         <x-text-input class="w-3/4" x-model="model[i-1].subtitle" name="subtitle[]" />
@@ -34,3 +37,17 @@
 </div>
 
 
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('form', () => ({
+            addSection(index) {
+                this.items.splice(index, 0, index + 1)
+                this.model.splice(index, 0, {
+                    subtitle: null,
+                    content: null
+                })
+                console.log(this.model)
+            }
+        }))
+    })
+</script>
