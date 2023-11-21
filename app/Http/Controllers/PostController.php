@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Models\PostSection;
 use App\Http\Requests\StorePostRequest;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 
 class PostController extends Controller
@@ -17,7 +18,6 @@ class PostController extends Controller
     public function store(StorePostRequest $request)
     {
         if ($data = $request->validated()) {
-            $data['slug'] = $data['title'];
             $post = Post::create($data);
             for ($i = 0; $i < count($data['subtitle']); $i++) {
                 if ($data['subtitle'][$i] && $data['content'][$i]) {
@@ -32,7 +32,18 @@ class PostController extends Controller
             return back();
         }
 
-        return view('post.create');
+        return $this->show($post);
+    }
+
+    public function show(Post $post)
+    {
+
+        $postSections = $post->sections->map(function ($section) {
+            return collect($section->toArray())
+                ->only(['title', 'content'])
+                ->all();
+        });
+        return view('post.show', ['post' => $post, 'postSections' => $postSections]);
     }
 
     private function createSection($data)
