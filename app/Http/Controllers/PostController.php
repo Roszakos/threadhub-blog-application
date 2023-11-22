@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use App\Models\PostSection;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Pagination\Paginator;
 use App\Http\Requests\StorePostRequest;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 
 class PostController extends Controller
@@ -13,6 +15,12 @@ class PostController extends Controller
     public function create()
     {
         return view('post.create');
+    }
+
+    public function index(Request $request)
+    {
+        $posts = Post::select()->where('user_id', $request->user()->id)->simplePaginate(6);
+        return view('dashboard', ['posts' => $posts]);
     }
 
     public function store(StorePostRequest $request)
