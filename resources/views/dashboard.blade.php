@@ -7,7 +7,7 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg ">
                 <div class="p-6 text-gray-900">
                     <div class="flex justify-between">
                         <div class="text-lg">
@@ -19,13 +19,15 @@
                             {{ __('+ Add new post') }}
                         </a>
                     </div>
+
                     <div class="grid gap-4 grid-cols-2 mt-5">
-                        <div class="bg-slate-200 py-20 col-span-1">
-                            {{-- {{ __('xd') }} --}}
-                        </div>
-                        <div class="bg-slate-200 py-20 col-span-1">
-                            {{-- {{ __('xd') }} --}}
-                        </div>
+                        @foreach ($posts as $post)
+                            <x-post.dashboard-post-card :title="$post->title" :slug="$post->slug" :created="$post->created_at"
+                                :updated="$post->updated_at" />
+                        @endforeach
+                    </div>
+                    <div class="mt-5">
+                        {{ $posts->links() }}
                     </div>
                 </div>
             </div>
