@@ -54,6 +54,55 @@ class PostController extends Controller
         return view('post.show', ['post' => $post, 'postSections' => $postSections]);
     }
 
+    public function edit(Request $request, Post $post)
+    {
+        if ($request->user()->cannot('update', $post)) {
+            return redirect('dashboard')->with('error', 'You don\'t have access to that page.');
+        }
+        $postSectionsSubtitle = [];
+        $postSectionsContent = [];
+
+        foreach ($post->sections as $section) {
+            array_push($postSectionsSubtitle, $section->title);
+            array_push($postSectionsContent, $section->content);
+        }
+
+        return view('post.edit', ['post' => $post, 'postSectionsSubtitle' => $postSectionsSubtitle, 'postSectionsContent' => $postSectionsContent]);
+    }
+
+    public function update(StorePostRequest $request, Post $post)
+    {
+        if ($request->user()->cannot('update', $post)) {
+            return redirect('dashboard')->with('error', 'Unauthorized action.');
+        }
+
+        if ($data = $request->validated()) {
+            $post->update(['title' => $data['title']]);
+            $postSections = $post->sections;
+
+            for ($i = 0; $i < count($data['subtitle']); $i++) {
+                if ($data['subtitle'][$i] && $data['content'][$i]) {
+                    if (count($postSections)) {
+                        $postSections[0]->update(['title' => $data['subtitle'][$i], 'content' => $data['content'][$i]]);
+                    } else {
+                        $this->createSection([
+                            'title' => $data['subtitle'][$i],
+                            'content' => $data['content'][$i],
+                            'post_id' => $post->id
+                        ]);
+                    }
+                    $postSections->shift();
+                }
+            }
+            foreach ($postSections as $section) {
+                $section->delete();
+            }
+        } else {
+            return back();
+        }
+        return redirect()->route('post.view', [$post]);
+    }
+
     private function createSection($data)
     {
         $validator = Validator::make($data, [
