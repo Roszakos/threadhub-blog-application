@@ -17,7 +17,7 @@ use App\Http\Controllers\ProfileController;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('home');
 
 Route::get('/dashboard', [PostController::class, 'index'])
     ->middleware(['auth', 'verified'])->name('dashboard');
@@ -28,6 +28,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/post/create', [PostController::class, 'create'])->name('post.create');
     Route::post('/post/create', [PostController::class, 'store'])->name('post.store');
+    Route::get('/post/{post:slug}/edit', [PostController::class, 'edit'])->name('post.edit');
+    Route::post('/post/{post:slug}/edit', [PostController::class, 'update'])->name('post.update');
 });
 
 Route::get('/post/{post:slug}', [PostController::class, 'show'])->name('post.view');
