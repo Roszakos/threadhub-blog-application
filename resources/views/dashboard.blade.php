@@ -14,7 +14,7 @@
                             {{ __('Your posts') }}
                         </div>
                         <a href="{{ route('post.create') }}"
-                            class="py-2 px-3 bg-sky-400 ring-1 ring-black cursor-pointer rounded-sm
+                            class="py-2 px-3 bg-sky-400 ring-1 ring-black rounded-sm
                             hover:bg-sky-500 hover:ring-2">
                             {{ __('+ Add new post') }}
                         </a>
