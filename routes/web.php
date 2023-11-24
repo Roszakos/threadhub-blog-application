@@ -30,6 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/post/create', [PostController::class, 'store'])->name('post.store');
     Route::get('/post/{post:slug}/edit', [PostController::class, 'edit'])->name('post.edit');
     Route::post('/post/{post:slug}/edit', [PostController::class, 'update'])->name('post.update');
+    Route::delete('/post/{post:slug}', [PostController::class, 'destroy'])->name('post.destroy');
 });
 
 Route::get('/post/{post:slug}', [PostController::class, 'show'])->name('post.view');
