@@ -6,29 +6,32 @@
         <div class="font-semibold text-xl">
             {{ $title }}
         </div>
-        <div @@click.stop="redirect('{{ route('post.edit', $slug) }}')"
-            href="{{ route('post.edit', $slug) }}"
-            class="py-1 px-5 text-md bg-slate-400 ring-1 ring-black rounded-sm cursor-pointer
-        hover:bg-slate-500 hover:ring-2">
-            Edit
-        </div>
     </div>
-    <div class="absolute bottom-3 left-[3%] text-sm flex justify-between w-[30%] flex-col">
-        <div class="flex w-full justify-between">
-            <div>
-                {{ __('Created: ') }}
+    <div class="absolute bottom-3 left-[3%] text-sm flex justify-between w-[94%]">
+        <div class="flex flex-col w-[35%]">
+            <div class="flex w-full justify-between">
+                <div>
+                    {{ __('Created: ') }}
+                </div>
+                <div>
+                    {{ date('m-d H:i', strtotime($created)) }}
+                </div>
             </div>
-            <div>
-                {{ date('m-d H:i', strtotime($created)) }}
+            <div class="flex w-full justify-between">
+                <div>
+                    {{ __('Last Edit: ') }}
+                </div>
+                <div>
+                    {{ date('m-d H:i', strtotime($updated)) }}
+                </div>
             </div>
         </div>
-        <div class="flex w-full justify-between">
-            <div>
-                {{ __('Last Edit: ') }}
+        <div class="flex gap-2 h-9">
+            <div class="!bg-gray-400 hover:!bg-gray-500 text-black inline-flex items-center px-4 py-2 border border-gray-300 rounded-md font-semibold text-xs  uppercase tracking-widest shadow-sm  focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150"
+                @@click.stop.prevent="redirect('{{ route('post.edit', $slug) }}')">
+                {{ __('Edit') }}
             </div>
-            <div>
-                {{ date('m-d H:i', strtotime($updated)) }}
-            </div>
+            <x-post.delete-post-form :slug="$slug" :name="__('delete-') . $slug" @@click.stop />
         </div>
     </div>
 </div>
