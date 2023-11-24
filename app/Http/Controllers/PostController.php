@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Models\PostSection;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Pagination\Paginator;
 use App\Http\Requests\StorePostRequest;
 use Illuminate\Support\Facades\Validator;
 
@@ -40,7 +38,7 @@ class PostController extends Controller
             return back();
         }
 
-        return $this->show($post);
+        return redirect()->route('post.view', [$post]);
     }
 
     public function show(Post $post)
@@ -101,6 +99,16 @@ class PostController extends Controller
             return back();
         }
         return redirect()->route('post.view', [$post]);
+    }
+
+    public function destroy(Request $request, Post $post)
+    {
+        if ($request->user()->cannot('delete', $post)) {
+            return redirect('dashboard')->with('error', 'Unauthorized action.');
+        }
+        $post->sections()->delete();
+        $post->delete();
+        return redirect()->route('dashboard');
     }
 
     private function createSection($data)
