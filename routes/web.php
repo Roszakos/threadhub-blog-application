@@ -15,9 +15,7 @@ use App\Http\Controllers\ProfileController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+Route::get('/', [PostController::class, 'getPostsForHome'])->name('home');
 
 Route::get('/dashboard', [PostController::class, 'index'])
     ->middleware(['auth', 'verified'])->name('dashboard');
