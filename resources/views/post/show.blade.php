@@ -1,26 +1,28 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
 
-        </h2>
-    </x-slot>
-
-    <div class="">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 ">
-            <div class="bg-white overflow-hidden shadow-sm min-h-[100vh] pb-10">
-                <div class="text-3xl px-2 font-bold text-center w-full pt-3 pb-12 leading-7 tracking-wider">
+    <div class="w-full">
+        <div class="text-3xl font-bold text-center pt-3 pb-12 leading-7 tracking-wider h-[20rem] bg-gray-200 bg-cover bg-center relative"
+            style="background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url({{ asset($post->image) }})">
+            <div class="w-full bg-black/60 py-9 absolute bottom-0 px-4">
+                <div class="max-w-6xl mx-auto text-left text-white">
                     {{ $post->title }}
                 </div>
-                <div>
-                    @foreach ($postSections as $section)
-                        <div class="text-2xl font-semibold pt-4 px-10">
-                            {{ $section['title'] }}
-                        </div>
-                        <p class="text-md font-normal px-14 whitespace-pre-line">
-                            {{ $section['content'] }}
-                        </p>
-                    @endforeach
+                <div class="max-w-6xl mx-auto text-left text-white items-end mt-2 flex gap-3 justify-end font-normal">
+                    <div class="text-xl">{{ $post->author }}</div>
+                    <div class="text-xl">{{ date('m-d H:i', strtotime($post->created_at)) }}</div>
                 </div>
+            </div>
+        </div>
+        <div class="bg-gray-100 overflow-hidden shadow-sm min-h-[100vh] pb-10 max-w-3xl mx-auto">
+            <div>
+                @foreach ($post->sections as $section)
+                    <div class="text-2xl font-semibold pt-4 px-10">
+                        {{ $section['title'] }}
+                    </div>
+                    <p class="text-md font-normal px-14 whitespace-pre-line">
+                        {{ $section['content'] }}
+                    </p>
+                @endforeach
             </div>
         </div>
     </div>
