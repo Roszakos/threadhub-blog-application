@@ -16,11 +16,26 @@
 @endif
 
 <div class="p-6 text-gray-900">
-    <form method="post" action="{{ $postAction }}" x-data="form" id="myForm">
+    <form method="post" action="{{ $postAction }}" enctype="multipart/form-data" x-data="form" id="myForm">
         @csrf
-        <x-input-label value="Title" class="py-2 font-semibold !text-lg" />
-        <x-text-input class="w-3/4" name="title" :value="$title" autofocus required />
-        <x-input-error :messages="$errors->get('title')" />
+        <div class="pb-1 w-3/4">
+            {{-- Title --}}
+            <x-input-label value="Title" class="py-2 font-semibold !text-lg" />
+            <x-text-input class="w-full" name="title" :value="$title" autofocus required />
+            <x-input-error :messages="$errors->get('title')" />
+
+            {{-- Categories --}}
+
+            {{-- Image --}}
+            <x-input-label value="Article Image" class="py-2 font-semibold " />
+            <img id="chosenImage" class="w-2/5 pb-2" />
+            <label
+                class="border-[1px] border-black inline-block py-2 px-3 cursor-pointer rounded-lg uppercase text-xs font-semibold hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 tracking-widest">
+                <input type="file" name="image" accept="image/png, image/jpeg, image/jpg" x-on:change="showImage"
+                    class="hidden" />
+                Choose image
+            </label>
+        </div>
 
         @if (old('subtitle'))
             @for ($i = 0; $i < count(old('subtitle')); $i++)
@@ -93,7 +108,7 @@
         <div class="text-right w-3/4 mt-3">
             <x-primary-button>
                 @if ($action == 'create')
-                    {{ __('Create new post') }}
+                    {{ __('Create new article') }}
                 @else
                     {{ __('Edit') }}
                 @endif
@@ -137,5 +152,16 @@
             titleErrors: titleErrors,
             contentErrors: contentErrors
         }
+    }
+
+    function showImage(ev) {
+        const file = ev.target.files[0]
+
+        const reader = new FileReader()
+        reader.onload = () => {
+            document.getElementById('chosenImage').src = reader.result
+        }
+
+        reader.readAsDataURL(file)
     }
 </script>
