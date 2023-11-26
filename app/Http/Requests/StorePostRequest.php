@@ -51,7 +51,6 @@ class StorePostRequest extends FormRequest
             'string' => 'This field must be a string.',
             'max:200' => 'This field cannot be longer than 200 characters.',
             'max:10000' => 'The content of 1 section cannot be longer than 10000 characters',
-            File::image() => 'Wrong file type'
         ];
     }
 }
