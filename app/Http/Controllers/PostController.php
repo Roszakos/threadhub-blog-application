@@ -108,13 +108,31 @@ class PostController extends Controller
         return redirect()->route('dashboard');
     }
 
-    public function getPostsForHome() {
+    public function getPostsForHome()
+    {
         $posts = DB::table('posts')
-                    ->join('users', 'users.id', '=', 'posts.user_id')
-                    ->select('posts.title', 'posts.image', 'posts.created_at', 'users.nickname as author')
-                    ->orderBy('created_at', 'desc')
-                    ->limit(7)
-                    ->get();
+            ->join('users', 'users.id', '=', 'posts.user_id')
+            ->select(
+                'posts.id',
+                'posts.title',
+                'posts.image',
+                'posts.created_at',
+                'users.nickname as author'
+            )
+            ->orderBy('created_at', 'desc')
+            ->limit(7)
+            ->get();
+
+        foreach ($posts as $post) {
+            $post->{'snippet'} = DB::table('post_sections')
+                ->select('content')
+                ->where('post_id', '=', $post->id)
+                ->orderBy('id')
+                ->pluck('content')
+                ->first();
+            $post->snippet = substr($post->snippet, 0, 100) . '...';
+        }
+
         return view('home', ['posts' => $posts]);
     }
 
