@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rules\File;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StorePostRequest extends FormRequest
@@ -31,6 +32,11 @@ class StorePostRequest extends FormRequest
         return [
             'user_id' => 'exists:users,id',
             'title' => 'required|string|max:200',
+            'image' => [
+                'nullable',
+                File::image()
+                    ->max(10000)
+            ],
             'subtitle' => 'required|array',
             'content' => 'required|array',
             'subtitle.*' => 'string|required|max:200',
