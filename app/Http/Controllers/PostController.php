@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Models\PostSection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StorePostRequest;
 use Illuminate\Support\Facades\Validator;
 
@@ -24,6 +25,7 @@ class PostController extends Controller
     public function store(StorePostRequest $request)
     {
         if ($data = $request->validated()) {
+            $data['image'] = $data['image']->store('post_images', 'public');
             $post = Post::create($data);
             for ($i = 0; $i < count($data['subtitle']); $i++) {
                 if ($data['subtitle'][$i] && $data['content'][$i]) {
@@ -43,13 +45,8 @@ class PostController extends Controller
 
     public function show(Post $post)
     {
-
-        $postSections = $post->sections->map(function ($section) {
-            return collect($section->toArray())
-                ->only(['title', 'content'])
-                ->all();
-        });
-        return view('post.show', ['post' => $post, 'postSections' => $postSections]);
+        $post['author'] = DB::table('users')->select('nickname')->where('id', '=', $post->user_id)->pluck('nickname')->first();
+        return view('post.show', ['post' => $post]);
     }
 
     public function edit(Request $request, Post $post)
@@ -109,6 +106,16 @@ class PostController extends Controller
         $post->sections()->delete();
         $post->delete();
         return redirect()->route('dashboard');
+    }
+
+    public function getPostsForHome() {
+        $posts = DB::table('posts')
+                    ->join('users', 'users.id', '=', 'posts.user_id')
+                    ->select('posts.title', 'posts.image', 'posts.created_at', 'users.nickname as author')
+                    ->orderBy('created_at', 'desc')
+                    ->limit(7)
+                    ->get();
+        return view('home', ['posts' => $posts]);
     }
 
     private function createSection($data)
