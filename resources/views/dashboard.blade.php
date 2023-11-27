@@ -14,16 +14,14 @@
                             {{ __('Your posts') }}
                         </div>
                         <a href="{{ route('post.create') }}"
-                            class="py-2 px-3 bg-sky-400 ring-1 ring-black rounded-sm
-                            hover:bg-sky-500 hover:ring-2">
+                            class="bg-sky-400 hover:bg-sky-500 text-black inline-flex items-center px-4 py-3 border border-gray-300 rounded-md font-semibold text-xs  uppercase tracking-widest shadow-sm  focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
                             {{ __('+ Add new post') }}
                         </a>
                     </div>
 
                     <div class="grid gap-4 grid-cols-2 mt-5">
                         @foreach ($posts as $post)
-                            <x-post.dashboard-post-card :title="$post->title" :slug="$post->slug" :created="$post->created_at"
-                                :updated="$post->updated_at" />
+                            <x-post.dashboard-post-card :post="$post" />
                         @endforeach
                     </div>
                     <div class="mt-5">
