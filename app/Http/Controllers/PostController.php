@@ -18,7 +18,10 @@ class PostController extends Controller
 
     public function index(Request $request)
     {
-        $posts = Post::select()->where('user_id', $request->user()->id)->simplePaginate(6);
+        $posts = Post::select()
+            ->where('user_id', $request->user()->id)
+            ->orderByDesc('created_at')
+            ->simplePaginate(6);
         return view('dashboard', ['posts' => $posts]);
     }
 
@@ -123,6 +126,15 @@ class PostController extends Controller
             ->limit(7)
             ->get();
 
+        $trendingPost = $posts->shift();
+        $trendingPost->{'snippet'} = DB::table('post_sections')
+            ->select('content')
+            ->where('post_id', '=', $trendingPost->id)
+            ->orderBy('id')
+            ->pluck('content')
+            ->first();
+        $trendingPost->snippet = trim(substr($trendingPost->snippet, 0, 200)) . '...';
+
         foreach ($posts as $post) {
             $post->{'snippet'} = DB::table('post_sections')
                 ->select('content')
@@ -130,10 +142,10 @@ class PostController extends Controller
                 ->orderBy('id')
                 ->pluck('content')
                 ->first();
-            $post->snippet = substr($post->snippet, 0, 100) . '...';
+            $post->snippet = trim(substr($post->snippet, 0, 100)) . '...';
         }
 
-        return view('home', ['posts' => $posts]);
+        return view('home', ['posts' => $posts, 'trendingPost' => $trendingPost]);
     }
 
     private function createSection($data)
