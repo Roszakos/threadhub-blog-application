@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\VoteController;
 use App\Http\Controllers\ProfileController;
 
 /*
@@ -29,6 +30,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/post/{post:slug}/edit', [PostController::class, 'edit'])->name('post.edit');
     Route::post('/post/{post:slug}/edit', [PostController::class, 'update'])->name('post.update');
     Route::delete('/post/{post:slug}', [PostController::class, 'destroy'])->name('post.destroy');
+    Route::post('/vote', [VoteController::class, 'store'])->name('vote.store');
+    Route::put('/vote', [VoteController::class, 'update'])->name('vote.update');
+    Route::delete('/vote/{postId}', [VoteController::class, 'destroy'])->name('vote.destroy');
 });
 
 Route::get('/post/{post:slug}', [PostController::class, 'show'])->name('post.view');
