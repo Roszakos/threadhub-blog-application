@@ -46,10 +46,41 @@ class PostController extends Controller
         return redirect()->route('post.view', [$post]);
     }
 
-    public function show(Post $post)
+    public function show(Post $post, Request $request)
     {
-        $post['author'] = DB::table('users')->select('nickname')->where('id', '=', $post->user_id)->pluck('nickname')->first();
-        return view('post.show', ['post' => $post]);
+        if($request->user()) {
+        $vote = DB::table('votes')
+            ->select('vote')
+            ->where('post_id', '=', $post->id)
+            ->where('user_id', '=', $request->user()->id)
+            ->pluck('vote')
+            ->first();
+        } else {
+            $vote = null;
+        }
+        $post['author'] = DB::table('users')
+            ->select('nickname')
+            ->where('id', '=', $post->user_id)
+            ->pluck('nickname')
+            ->first();
+        $upvotes = DB::table('votes')
+            ->selectRaw('count(id) as votes')
+            ->where('post_id', '=', $post->id)
+            ->where('vote', '=', 1)
+            ->pluck('votes')
+            ->all();
+        $downvotes = DB::table('votes')
+            ->selectRaw('count(id) as votes')
+            ->where('post_id', '=', $post->id)
+            ->where('vote', '=', 2)
+            ->pluck('votes')
+            ->all();
+        return view('post.show', [
+            'post' => $post, 
+            'vote' => $vote, 
+            'upvotes' => $upvotes[0], 
+            'downvotes' => $downvotes[0]
+        ]);
     }
 
     public function edit(Request $request, Post $post)
