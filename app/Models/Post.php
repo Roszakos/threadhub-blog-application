@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\User;
+use App\Models\Vote;
 use App\Models\Comment;
 use App\Models\PostSection;
 use Spatie\Sluggable\HasSlug;
@@ -48,5 +49,10 @@ class Post extends Model
     public function sections(): HasMany
     {
         return $this->hasMany(PostSection::class);
+    }
+
+    public function votes(): HasMany
+    {
+        return $this->hasMany(Vote::class);
     }
 }
