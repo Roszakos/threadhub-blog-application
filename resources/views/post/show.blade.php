@@ -8,12 +8,11 @@
                 </div>
 
                 <div class="flex items-end justify-between max-w-6xl mx-auto pt-3">
-                    <x-post.votes :upvotes="$upvotes" :downvotes="$downvotes" :vote="$vote" :postId="$post->id"/>
+                    <x-post.votes :upvotes="$upvotes" :downvotes="$downvotes" :vote="$vote" :postId="$post->id" />
 
-                    <div
-                        class="text-left text-white items-end mt-2 flex gap-3 justify-end font-normal">
+                    <div class="text-left text-white items-end mt-2 flex gap-3 justify-end font-normal">
                         <div class="text-xl">{{ $post->author }}</div>
-                        <div class="text-xl">{{ date('m-d H:i', strtotime($post->created_at)) }}</div>
+                        <div class="text-xl">{{ date('Y-m-d H:i', strtotime($post->created_at)) }}</div>
                     </div>
                 </div>
             </div>
@@ -28,6 +27,13 @@
                         {{ $section['content'] }}
                     </p>
                 @endforeach
+                <div class="mt-3 w-full text-right px-3">
+                    <span class="italic font-semibold">{{$post->author}}</span>
+                    <span>, {{ date('Y-m-d H:i', strtotime($post->created_at)) }}</span>
+                </div>
+            </div>
+            <div class="mt-10">
+                <x-post.comment-section :comments="$comments" :postId="$post->id"/>
             </div>
         </div>
     </div>
