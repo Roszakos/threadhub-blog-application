@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Comment;
 use Illuminate\Http\Request;
-use App\Http\Requests\CommentRequest;
+use App\Http\Requests\StoreCommentRequest;
 use Illuminate\Support\Facades\Validator;
 
 class CommentController extends Controller
 {
-    public function store(CommentRequest $request)
+    public function store(StoreCommentRequest $request)
     {
         
         $validator = Validator::make($request->all(), [
