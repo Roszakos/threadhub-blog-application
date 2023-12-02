@@ -61,5 +61,5 @@
         }
     };
 
-    document.onload(setTimeout(showElements, 500))
+    document.onload = setTimeout(showElements, 500)
 </script>

@@ -6,6 +6,8 @@
     'loggedIn' => false,
 ])
 
+
+
 @auth
     @php
         $loggedIn = true;
@@ -78,6 +80,7 @@
                         }
                     }
                 } else {
+                    
                     window.location.href = '/login'
                 }
             }
