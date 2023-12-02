@@ -46,7 +46,6 @@ class CommentController extends Controller
                 'max:500'
             ]
         ]);
-
         $comment->content = $data['content'];
         $comment->save();
 

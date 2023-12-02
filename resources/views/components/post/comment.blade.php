@@ -82,7 +82,14 @@
                 </div>
                 <x-textarea-input rows="4" class="mt-2 w-full" x-model="comment.editModel" name="content"/>
                 <div class="mt-2 flex gap-2 justify-end">
-                        <x-secondary-button x-on:click="comment.showEditForm = false" class="!py-1">
+                        <x-secondary-button
+                            x-data="{
+                                hideEditForm() {
+                                    this.comment.showEditForm = false
+                                    this.comment.editError = false
+                                }
+                            }" x-on:click="hideEditForm" class="!py-1"
+                        >
                             {{ __('Cancel') }}
                         </x-secondary-button>
                         <x-primary-button class="!py-1">
@@ -90,6 +97,11 @@
                         </x-primary-button>
                     </div>
             </form>
+            <template x-if="comment.editError">
+                <div class="px-2 text-red-500 font-semibold italic">
+                    Comment couldn't be updated. Try again later.
+                </div>
+            </template>
         </div>
     </template>
 </div>

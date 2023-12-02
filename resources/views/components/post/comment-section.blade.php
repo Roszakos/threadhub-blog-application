@@ -46,7 +46,12 @@
                 if(response.status == 200) {
                     comment.content = comment.editModel
                     comment.showEditForm = false
+                } else {
+                    comment.editError = true
                 }
+            })
+            .catch((err) => {
+                comment.editError = true
             })
     }
 }">
