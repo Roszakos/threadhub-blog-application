@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\VoteController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
 
 /*
@@ -33,8 +34,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/vote', [VoteController::class, 'store'])->name('vote.store');
     Route::put('/vote', [VoteController::class, 'update'])->name('vote.update');
     Route::delete('/vote/{postId}', [VoteController::class, 'destroy'])->name('vote.destroy');
+
+    Route::delete('/comment/{comment}', [CommentController::class, 'destroy'])->name('comment.destroy');
+    Route::put('/comment/{comment}', [CommentController::class, 'update'])->name('comment.update');
 });
 
 Route::get('/post/{post:slug}', [PostController::class, 'show'])->name('post.view');
+
+Route::post('/comment', [CommentController::class, 'store'])->name('comment.store');
 
 require __DIR__ . '/auth.php';
