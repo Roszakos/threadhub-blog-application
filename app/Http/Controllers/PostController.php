@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Post;
+use App\Models\User;
 use App\Models\PostSection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StorePostRequest;
 use Illuminate\Support\Facades\Validator;
 
@@ -48,13 +51,13 @@ class PostController extends Controller
 
     public function show(Post $post, Request $request)
     {
-        if($request->user()) {
-        $vote = DB::table('votes')
-            ->select('vote')
-            ->where('post_id', '=', $post->id)
-            ->where('user_id', '=', $request->user()->id)
-            ->pluck('vote')
-            ->first();
+        if ($request->user()) {
+            $vote = DB::table('votes')
+                ->select('vote')
+                ->where('post_id', '=', $post->id)
+                ->where('user_id', '=', $request->user()->id)
+                ->pluck('vote')
+                ->first();
         } else {
             $vote = null;
         }
@@ -75,11 +78,28 @@ class PostController extends Controller
             ->where('vote', '=', 2)
             ->pluck('votes')
             ->all();
+
+        $comments = $post->comments->map(function ($comment) {
+            $dt = Carbon::create($comment->created_at);
+            $comment->{'posted'} = $dt->diffForHumans();
+            if ($comment->user_id) {
+                $comment->author = User::find($comment->user_id)->nickname;
+                if(Auth::user() && $comment->user_id === Auth::user()->id) {
+                    $comment->{'owner'} = true;
+                } else {
+                    $comment->{'owner'} = false;
+                }
+                return $comment;
+            }
+            return $comment;
+        })->sortByDesc('created_at')->values()->all();
+
         return view('post.show', [
-            'post' => $post, 
-            'vote' => $vote, 
-            'upvotes' => $upvotes[0], 
-            'downvotes' => $downvotes[0]
+            'post' => $post,
+            'vote' => $vote,
+            'upvotes' => $upvotes[0],
+            'downvotes' => $downvotes[0],
+            'comments' => $comments
         ]);
     }
 
