@@ -131,9 +131,6 @@
             removeSection(index) {
                 this.model.splice(index, 1)
                 this.items.splice(index, 1)
-
-                console.log(this.items)
-                console.log(this.model)
             }
         }))
     })
