@@ -25,6 +25,10 @@ class CommentController extends Controller
                 'required',
                 'string',
                 'max:500'
+            ],
+            'parent_id' => [
+                'nullable',
+                'exists:Comments,id'
             ]
         ]);
 
