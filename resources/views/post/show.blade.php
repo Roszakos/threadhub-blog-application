@@ -33,7 +33,7 @@
                 </div>
             </div>
             <div class="mt-10">
-                <x-post.comment-section :comments="$comments" :postId="$post->id"/>
+                <x-comment.comment-section :comments="$comments" :postId="$post->id" :depth="0"/>
             </div>
         </div>
     </div>

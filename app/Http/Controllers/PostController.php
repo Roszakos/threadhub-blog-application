@@ -79,20 +79,29 @@ class PostController extends Controller
             ->pluck('votes')
             ->all();
 
-        $comments = $post->comments->map(function ($comment) {
+        $comments = DB::table('comments')
+            ->select('id', 'user_id', 'author', 'content', 'created_at')
+            ->where('post_id', '=', $post->id)
+            ->where('parent_id', '=', null)
+            ->orderByDesc('created_at')
+            ->get();
+
+        $comments = $comments->map(function ($comment) {
+            $comment->{'replies'} = $this->commentReplies($comment);
             $dt = Carbon::create($comment->created_at);
             $comment->{'posted'} = $dt->diffForHumans();
             if ($comment->user_id) {
                 $comment->author = User::find($comment->user_id)->nickname;
-                if(Auth::user() && $comment->user_id === Auth::user()->id) {
+                if (Auth::user() && $comment->user_id === Auth::user()->id) {
                     $comment->{'owner'} = true;
                 } else {
                     $comment->{'owner'} = false;
                 }
-                return $comment;
+            } else {
+                $comment->{'owner'} = false;
             }
             return $comment;
-        })->sortByDesc('created_at')->values()->all();
+        });
 
         return view('post.show', [
             'post' => $post,
@@ -197,6 +206,34 @@ class PostController extends Controller
         }
 
         return view('home', ['posts' => $posts, 'trendingPost' => $trendingPost]);
+    }
+
+    private function commentReplies($comment)
+    {
+        $replies = DB::table('comments')
+            ->select('id', 'user_id', 'author', 'content', 'created_at')
+            ->where('parent_id', '=', $comment->id)
+            ->orderByDesc('created_at')
+            ->get();
+        if (count($replies)) {
+            $replies->map(function ($comment) {
+                $comment->{'replies'} = $this->commentReplies($comment);
+                $dt = Carbon::create($comment->created_at);
+                $comment->{'posted'} = $dt->diffForHumans();
+                if ($comment->user_id) {
+                    $comment->author = User::find($comment->user_id)->nickname;
+                    if (Auth::user() && $comment->user_id === Auth::user()->id) {
+                        $comment->{'owner'} = true;
+                    } else {
+                        $comment->{'owner'} = false;
+                    }
+                } else {
+                    $comment->{'owner'} = false;
+                }
+                return $comment;
+            });
+        }
+        return $replies;
     }
 
     private function createSection($data)
