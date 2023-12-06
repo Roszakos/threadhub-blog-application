@@ -36,6 +36,12 @@ class Post extends Model
             ->slugsShouldBeNoLongerThan(100);
     }
 
+    public function incrementViewCount()
+    {
+        $this->views++;
+        return $this->save();
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

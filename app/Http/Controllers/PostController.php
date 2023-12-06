@@ -9,6 +9,7 @@ use App\Models\PostSection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 use App\Http\Requests\StorePostRequest;
 use Illuminate\Support\Facades\Validator;
 
@@ -51,6 +52,11 @@ class PostController extends Controller
 
     public function show(Post $post, Request $request)
     {
+        if (!Cookie::get('post-' . $post->id)) {
+            Cookie::queue(Cookie::make('post-' . $post->id, true, 60));
+            $post->incrementViewCount();
+        }
+
         if ($request->user()) {
             $vote = DB::table('votes')
                 ->select('vote')
