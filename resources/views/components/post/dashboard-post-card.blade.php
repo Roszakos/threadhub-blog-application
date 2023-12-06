@@ -3,7 +3,7 @@
 <div x-data="postCard" @@click="redirect('{{ route('post.view', $post->slug) }}')"
     class="border-2 relative bg-slate-200 col-span-1 h-[10rem] cursor-pointer hover:bg-slate-300 bg-center bg-cover"
     style="background-image: url({{ asset($post->image) }})">
-    <div class="absolute top-0 w-full h-full bg-white/70">
+    <div class="absolute top-0 w-full h-full bg-white/[0.85]">
         <div class="flex justify-between w-[94%] mt-3 m-auto">
             <div class="font-semibold text-xl">
                 {{ $post->title }}
@@ -16,7 +16,7 @@
                         {{ __('Created: ') }}
                     </div>
                     <div>
-                        {{ date('m-d H:i', strtotime($post->created_at)) }}
+                        {{ date('m-d-Y H:i', strtotime($post->created_at)) }}
                     </div>
                 </div>
                 <div class="flex w-full justify-between">
@@ -24,7 +24,7 @@
                         {{ __('Last Edit: ') }}
                     </div>
                     <div>
-                        {{ date('m-d H:i', strtotime($post->updated_at)) }}
+                        {{ date('m-d-Y H:i', strtotime($post->updated_at)) }}
                     </div>
                 </div>
             </div>
