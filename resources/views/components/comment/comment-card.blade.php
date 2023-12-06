@@ -40,8 +40,22 @@
             })
     },
     editComment() {
-        let newContent = document.getElementById('edit-content-{{ $comment->id }}').value
-        document.getElementById('comment-content-{{ $comment->id }}').innerHTML = newContent
+        let content = document.getElementById('edit-content-{{ $comment->id }}').value
+        let data = {
+            content: content
+        }
+        axios.put('{{ route('comment.update', $comment->id) }}', data)
+            .then((response) => {
+                if (response.status == 200) {
+                    document.getElementById('comment-content-{{ $comment->id }}').innerHTML = content
+                    this.showEditForm = false
+                } else {
+                    this.editError = true
+                }
+            })
+            .catch((err) => {
+                this.editError = true
+            })
 
     }
 }" class="mt-4">
@@ -58,10 +72,10 @@
         </div>
 
         <div class="px-1 w-4/5 flex flex-col justify-between pl-3">
-            <div class="flex justify-between gap-2">
+            <div class="flex justify-between gap-2 ">
                 <template x-if="!showFull">
-                    <div>
-                        <span id="comment-content-{{ $comment->id }}">
+                    <div class="first-line:leading-[0rem]">
+                        <span id="comment-content-{{ $comment->id }}" class="whitespace-pre-line ">
                             {{ trim(substr($comment->content, 0, 250)) . __('...') }}
                         </span>
                         <span class="italic text-blue-700 cursor-pointer" x-on:click="showFull = true">
@@ -70,8 +84,8 @@
                     </div>
                 </template>
                 <template x-if="showFull">
-                    <div>
-                        <span id="comment-content-{{ $comment->id }}">
+                    <div class="first-line:leading-[0rem]">
+                        <span id="comment-content-{{ $comment->id }}" class="whitespace-pre-line ">
                             {{ $comment->content }}
                         </span>
                         @if (strlen($comment->content) > 260)

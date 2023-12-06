@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\VoteController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
@@ -42,5 +43,7 @@ Route::middleware('auth')->group(function () {
 Route::get('/post/{post:slug}', [PostController::class, 'show'])->name('post.view');
 
 Route::post('/comment', [CommentController::class, 'store'])->name('comment.store');
+
+Route::get('/user/{user}', [UserController::class, 'show'])->name('user.show');
 
 require __DIR__ . '/auth.php';
