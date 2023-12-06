@@ -24,7 +24,7 @@ class CommentController extends Controller
             'content' => [
                 'required',
                 'string',
-                'max:500'
+                'max:1000'
             ],
             'parent_id' => [
                 'nullable',
@@ -47,7 +47,7 @@ class CommentController extends Controller
             'content' => [
                 'required',
                 'string',
-                'max:500'
+                'max:1000'
             ]
         ]);
         $comment->content = $data['content'];
