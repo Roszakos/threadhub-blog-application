@@ -6,7 +6,7 @@
 ])
 @php
     $nickname = Auth::user() ? Auth::user()->nickname : '';
-    if ($depth > 3) {
+    if ($depth > 3 || $depth === 0) {
         $containerWidth = 'w-full';
     } else {
         $containerWidth = 'w-[95%]';

@@ -32,8 +32,18 @@
                     <span>, {{ date('Y-m-d H:i', strtotime($post->created_at)) }}</span>
                 </div>
             </div>
-            <div class="mt-10">
+            <div class="mt-10 px-3">
+                <div class=" font-semibold text-lg">
+                    {{$commentsAmount . __(' Comments') }}
+                </div>
+                <x-comment.add-comment-form :post-id="$post->id"/>
+                @if ($commentsAmount > 0)
                 <x-comment.comment-section :comments="$comments" :postId="$post->id" :depth="0"/>
+                @else
+                    <div class="text-center text-xs text-gray-600">
+                    {{__('This thread has no comments. Feel free to start a discussion.')}}
+                    </div>
+                @endif
             </div>
         </div>
     </div>

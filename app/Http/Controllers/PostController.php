@@ -109,12 +109,15 @@ class PostController extends Controller
             return $comment;
         });
 
+        $commentsAmount = $this->countComments($comments);
+
         return view('post.show', [
             'post' => $post,
             'vote' => $vote,
             'upvotes' => $upvotes[0],
             'downvotes' => $downvotes[0],
-            'comments' => $comments
+            'comments' => $comments,
+            'commentsAmount' => $commentsAmount
         ]);
     }
 
@@ -240,6 +243,19 @@ class PostController extends Controller
             });
         }
         return $replies;
+    }
+
+    public function countComments($comments) 
+    {
+        $amount = count($comments);
+
+        foreach ($comments as $comment) {
+            if (count($comment->replies)) {
+                $amount += $this->countComments($comment->replies);
+            }
+        }
+
+        return $amount;
     }
 
     private function createSection($data)
