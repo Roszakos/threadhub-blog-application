@@ -48,3 +48,20 @@
         </div>
     </div>
 </x-app-layout>
+<script>
+    window.addEventListener('DOMContentLoaded', (event) => {
+        const fragment = window.location.hash;
+
+        if (fragment) {
+            const element = document.querySelector(fragment);
+
+            if (element) {
+                element.firstElementChild.classList.remove('bg-slate-300')
+                element.firstElementChild.classList.remove('border-slate-500')
+                element.firstElementChild.classList.add('bg-slate-400/80')
+                element.firstElementChild.classList.add('border-sky-500')
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    });
+</script>
