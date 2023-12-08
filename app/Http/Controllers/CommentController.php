@@ -11,7 +11,7 @@ class CommentController extends Controller
 {
     public function store(StoreCommentRequest $request)
     {
-        
+
         $validator = Validator::make($request->all(), [
             'post_id' => [
                 'required',
@@ -32,7 +32,7 @@ class CommentController extends Controller
             ]
         ]);
 
-        $validator->sometimes('author', 'required|string|max:100', function($request) {
+        $validator->sometimes('author', 'required|string|max:100', function ($request) {
             return !$request->user_id;
         });
 
@@ -56,12 +56,20 @@ class CommentController extends Controller
         return response('success', 200);
     }
 
-    public function destroy(Comment $comment)
+    public function destroy(Comment $comment, Request $request)
     {
-        if ($comment->delete()) {
-            return response('success', 200);
+        if (str_contains($request->header('referer'), 'user')) {
+            if ($comment->delete()) {
+                return redirect()->route('user.show', $comment->user_id)->with(['status' => 'success']);
+            } else {
+                return redirect()->route('user.show', $comment->user_id)->with(['status' => 'fail']);
+            }
         } else {
-            return response('error', 500);
+            if ($comment->delete()) {
+                return response('success', 200);
+            } else {
+                return response('error', 500);
+            }
         }
     }
 }
