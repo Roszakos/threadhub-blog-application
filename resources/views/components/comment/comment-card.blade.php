@@ -22,6 +22,7 @@
         axios.post('{{ route('comment.store') }}', data)
             .then((response) => {
                 if (response.status == 201) {
+                    window.location.hash = 'comment-' + response.data.id
                     location.reload()
                 } else {
                     this.replyError = true
@@ -47,8 +48,8 @@
         axios.put('{{ route('comment.update', $comment->id) }}', data)
             .then((response) => {
                 if (response.status == 200) {
-                    document.getElementById('comment-content-{{ $comment->id }}').innerHTML = content
-                    this.showEditForm = false
+                    window.location.hash = 'comment-{{$comment->id}}'
+                    location.reload()
                 } else {
                     this.editError = true
                 }
@@ -58,14 +59,20 @@
             })
 
     }
-}" class="mt-4">
+}" class="mt-4" id="comment-{{ $comment->id }}">
     {{ $slot }}
     <div class="flex py-2 bg-slate-300 border border-slate-500 rounded-md  min-h-[6rem]">
 
         <div class="w-1/5 border-r border-black px-3 flex flex-col justify-between">
+            @if ($comment->user_id)
+            <a href="{{route('user.show', $comment->user_id)}}" class="font-semibold text-xl hover:text-sky-700 transition">
+                {{ $comment->author }}
+            </a>
+            @else
             <div class="font-semibold text-xl">
                 {{ $comment->author }}
             </div>
+            @endif
             <div>
                 {{ $comment->posted }}
             </div>
