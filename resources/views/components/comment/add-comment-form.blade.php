@@ -13,6 +13,7 @@
         axios.post('{{route('comment.store')}}', data)
             .then((response) => {
                 if (response.status == 201) {
+                    window.location.hash = 'comment-' + response.data.id
                     location.reload()
                 } else {
                     this.commentError = true

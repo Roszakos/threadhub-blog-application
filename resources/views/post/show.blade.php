@@ -60,7 +60,8 @@
                 element.firstElementChild.classList.remove('border-slate-500')
                 element.firstElementChild.classList.add('bg-slate-400/80')
                 element.firstElementChild.classList.add('border-sky-500')
-                element.scrollIntoView({ behavior: 'smooth' });
+                const scroll = element.offsetTop;
+                window.scrollTo({top: scroll, behavior: 'smooth' });
             }
         }
     });
