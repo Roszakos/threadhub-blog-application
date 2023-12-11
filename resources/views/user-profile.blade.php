@@ -5,12 +5,15 @@
                 <div class="flex justify-between">
                     <div class="flex gap-2">
                         <div>
-                            <x-user-profile.user-default-icon />
+                            @if ($user->image)
+                            @else
+                                <x-user-profile.user-default-icon />
+                            @endif
                         </div>
                         <div class="flex flex-col">
-                            <div class="font-semibold text-2xl tracking-wide">
+                            <a href="{{route('user.show', $user->id)}}" class="font-semibold text-2xl tracking-wide hover:underline">
                                 {{ $user->nickname }}
-                            </div>
+                            </a>
                             <div class="flex gap-1">
                                 <div>
                                     {{ $user->first_name }}
@@ -26,9 +29,9 @@
                             {{ __('Joined us ') . date('m-d-Y', strtotime($user->created_at)) }}
                         </div>
                         @if ($accountOwner)
-                        <a href="{{route('profile.edit')}}" class="text-sky-400">
-                            Account settings
-                        </a>
+                            <a href="{{ route('profile.edit') }}" class="text-sky-400 hover:underline">
+                                {{ __('Account settings') }}
+                            </a>
                         @endif
                     </div>
                 </div>
@@ -75,27 +78,35 @@
                     <template x-if="isSelected('posts')">
                         <div>
                             @if (count($posts))
-                            @foreach ($posts as $post)
-                                <x-user-profile.post-card :post="$post" />
-                            @endforeach
+                                @foreach ($posts as $post)
+                                    <x-user-profile.post-card :post="$post" />
+                                @endforeach
                             @else
                                 <div class="text-xs w-full text-center py-4">
-                                    {{__('This user hasn\'t published any articles yet.')}}
+                                    {{ __('This user hasn\'t published any articles yet.') }}
                                 </div>
                             @endif
+                            <div class="py-5 px-4">
+                                {{ $posts->links() }}
+                            </div>
                         </div>
                     </template>
                     <template x-if="isSelected('comments')">
                         <div>
+
                             @if (count($comments))
-                            @foreach ($comments as $comment)
-                                <x-user-profile.comment-card :comment="$comment" />
-                            @endforeach
-                            @else 
+
+                                @foreach ($comments as $comment)
+                                    <x-user-profile.comment-card :comment="$comment" />
+                                @endforeach
+                            @else
                                 <div class="text-xs w-full text-center py-4">
-                                    {{__('This user has no comments.')}}
+                                    {{ __('This user has no comments.') }}
                                 </div>
                             @endif
+                            <div class="py-5 px-4">
+                                {{ $comments->links() }}
+                            </div>
                         </div>
                     </template>
                 </div>

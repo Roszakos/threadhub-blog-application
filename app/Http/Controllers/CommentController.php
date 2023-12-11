@@ -43,6 +43,9 @@ class CommentController extends Controller
 
     public function update(Comment $comment, Request $request)
     {
+        if ($request->user()->cannot('update', $comment)) {
+            return redirect('dashboard')->with('error', 'Unauthorized action.');
+        }
         $data = $request->validate([
             'content' => [
                 'required',
@@ -58,6 +61,10 @@ class CommentController extends Controller
 
     public function destroy(Comment $comment, Request $request)
     {
+        if ($request->user()->cannot('delete', $comment)) {
+            return redirect('dashboard')->with('error', 'Unauthorized action.');
+        }
+
         if (str_contains($request->header('referer'), 'user')) {
             if ($comment->delete()) {
                 return redirect()->route('user.show', $comment->user_id)->with(['status' => 'success']);

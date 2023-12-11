@@ -5,6 +5,7 @@
             {{ __('Delete') }}
         </x-danger-button>
     </div>
+    
     <a href="{{ route('post.view', $comment->postSlug) }}#comment-{{$comment->id}}"
         class="relative block  w-[95%] px-5 py-2 min-h-[8rem] first-line: m-auto bg-gray-200/50 mt-2 transition 
         group-hover:shadow-[0_0_10px_2px_rgba(0,0,0,0.2)] hover:!shadow-[0_0_15px_6px_rgba(0,0,0,0.3)]">

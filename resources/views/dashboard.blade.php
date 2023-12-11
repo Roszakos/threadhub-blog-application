@@ -6,6 +6,9 @@
     </x-slot>
 
     <div class="py-12">
+        @isset($error))
+            {{$error}}
+        @endif
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg ">
                 <div class="p-6 text-gray-900">
@@ -19,11 +22,17 @@
                         </a>
                     </div>
 
+                    @if (count($posts))
                     <div class="grid gap-4 grid-cols-2 mt-5">
                         @foreach ($posts as $post)
                             <x-post.dashboard-post-card :post="$post" />
                         @endforeach
                     </div>
+                    @else
+                    <div class="text-center mt-2 w-full">
+                        You haven't published any articles yet.
+                    </div>
+                    @endif
                     <div class="mt-5">
                         {{ $posts->links() }}
                     </div>

@@ -64,9 +64,15 @@ class PostController extends Controller
                 ->where('user_id', '=', $request->user()->id)
                 ->pluck('vote')
                 ->first();
+            if ($request->user()->id === $post->user_id) {
+                $isOwner = true;
+            } else {
+                $isOwner = false;
+            }
         } else {
             $vote = null;
         }
+
         $post['author'] = DB::table('users')
             ->select('nickname')
             ->where('id', '=', $post->user_id)
@@ -117,7 +123,8 @@ class PostController extends Controller
             'upvotes' => $upvotes[0],
             'downvotes' => $downvotes[0],
             'comments' => $comments,
-            'commentsAmount' => $commentsAmount
+            'commentsAmount' => $commentsAmount,
+            'isOwner' => $isOwner
         ]);
     }
 
@@ -188,6 +195,8 @@ class PostController extends Controller
                 'posts.id',
                 'posts.title',
                 'posts.image',
+                'posts.views',
+                'posts.slug',
                 'posts.created_at',
                 'users.nickname as author'
             )
@@ -196,22 +205,56 @@ class PostController extends Controller
             ->get();
 
         $trendingPost = $posts->shift();
-        $trendingPost->{'snippet'} = DB::table('post_sections')
-            ->select('content')
+        $trendingPost->{'snippet'} = trim(
+            substr(
+                DB::table('post_sections')
+                    ->select('content')
+                    ->where('post_id', '=', $trendingPost->id)
+                    ->orderBy('id')
+                    ->pluck('content')
+                    ->first(),
+                0,
+                200
+            )
+        ) . '...';
+        $trendingPost->{'upvotes'} = DB::table('votes')
+            ->selectRaw('count(id) as votes')
             ->where('post_id', '=', $trendingPost->id)
-            ->orderBy('id')
-            ->pluck('content')
+            ->where('vote', '=', 1)
+            ->pluck('votes')
             ->first();
-        $trendingPost->snippet = trim(substr($trendingPost->snippet, 0, 200)) . '...';
+        $trendingPost->{'downvotes'} = DB::table('votes')
+            ->selectRaw('count(id) as votes')
+            ->where('post_id', '=', $trendingPost->id)
+            ->where('vote', '=', 2)
+            ->pluck('votes')
+            ->first();
 
         foreach ($posts as $post) {
-            $post->{'snippet'} = DB::table('post_sections')
-                ->select('content')
+            $post->{'snippet'} = trim(
+                substr(
+                    DB::table('post_sections')
+                        ->select('content')
+                        ->where('post_id', '=', $post->id)
+                        ->orderBy('id')
+                        ->pluck('content')
+                        ->first(),
+                    0,
+                    100
+                )
+            ) . '...';
+            $post->{'upvotes'} = DB::table('votes')
+                ->selectRaw('count(id) as votes')
                 ->where('post_id', '=', $post->id)
-                ->orderBy('id')
-                ->pluck('content')
+                ->where('vote', '=', 1)
+                ->pluck('votes')
                 ->first();
-            $post->snippet = trim(substr($post->snippet, 0, 100)) . '...';
+            $post->{'downvotes'} = DB::table('votes')
+                ->selectRaw('count(id) as votes')
+                ->where('post_id', '=', $post->id)
+                ->where('vote', '=', 2)
+                ->pluck('votes')
+                ->first();
         }
 
         return view('home', ['posts' => $posts, 'trendingPost' => $trendingPost]);
@@ -245,7 +288,7 @@ class PostController extends Controller
         return $replies;
     }
 
-    public function countComments($comments) 
+    public function countComments($comments)
     {
         $amount = count($comments);
 
