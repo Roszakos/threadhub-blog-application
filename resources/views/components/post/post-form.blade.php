@@ -1,22 +1,18 @@
 @props([
-    'items' => [1],
     'title' => '',
-    'subtitles' => [null],
-    'contents' => [null],
-    'titleErrors' => [null],
-    'contentErrors' => [null],
+    'image' => '',
+    'body' => '',
     'postAction' => route('post.store'),
     'action' => 'create',
 ])
 
-@if (old('title'))
     @php
-        $title = old('title');
+        $title = old('title') ? old('title') : $title;
+        $body = old('body') ? old('body') : $body;
     @endphp
-@endif
 
 <div class="p-6 text-gray-900">
-    <form method="post" action="{{ $postAction }}" enctype="multipart/form-data" x-data="form" id="myForm">
+    <form method="post" action="{{ $postAction }}" enctype="multipart/form-data">
         @csrf
         <div class="pb-1 w-3/4">
             {{-- Title --}}
@@ -27,82 +23,41 @@
             {{-- Categories --}}
 
             {{-- Image --}}
-            <x-input-label value="Article Image" class="py-2 font-semibold " />
-            <img id="chosenImage" class="w-2/5 pb-2" />
+            <x-input-label value="Article Image" class="py-2 font-semibold" />
+            @if ($image)
+                <div class="bg-cover bg-center h-[14rem] w-[50%] group" id="chosenImage"
+                    style="background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url({{ asset($image) }})">
+                    <div class="w-full h-full hidden bg-white/70 group-hover:flex items-center justify-center">
+                        <x-secondary-button x-data="" class="hover:bg-gray-200" x-on:click="removeImage">
+                            {{__('Remove Image')}}
+                        </x-secondary-button>
+                    </div>
+                </div> 
+            @else
+                <div class="bg-cover bg-center h-[14rem] w-[50%] hidden group" id="chosenImage">
+                    <div class="w-full h-full hidden bg-white/70 group-hover:flex items-center justify-center">
+                        <x-secondary-button x-data="" class="hover:bg-gray-200" x-on:click="removeImage">
+                            {{__('Remove Image')}}
+                        </x-secondary-button>
+                    </div>
+                </div> 
+            @endif
             <label
-                class="border-[1px] border-black inline-block py-2 px-3 cursor-pointer rounded-lg uppercase text-xs font-semibold hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 tracking-widest">
-                <input type="file" name="image" accept="image/png, image/jpeg, image/jpg" x-on:change="showImage"
+                class="border-[1px] border-black inline-block py-2 px-3 cursor-pointer mt-2 rounded-lg uppercase text-xs font-semibold hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 tracking-widest">
+                <input x-data="" type="file" id="imageInput" name="image" accept="image/png, image/jpeg, image/jpg" x-on:change="showImage"
                     class="hidden" />
-                Choose image
+                {{ __('Choose image') }}
             </label>
+            <x-input-error :messages="$errors->get('image')" />
+                <input type="text" id="imageAction" name="imageAction" hidden value="false"/>
         </div>
 
-        @if (old('subtitle'))
-            @for ($i = 0; $i < count(old('subtitle')); $i++)
-                @php
-                    $items[$i] = $i;
-                    $subtitles[$i] = old('subtitle')[$i];
-                    $contents[$i] = old('content')[$i];
-                @endphp
-                @if ($errors->get('subtitle.' . $i))
-                    @php
-                        $titleErrors[$i] = $errors->get('subtitle.' . $i)[0];
-                    @endphp
-                @else
-                    @php
-                        $titleErrors[$i] = null;
-                    @endphp
-                @endif
-                @if ($errors->get('content.' . $i))
-                    @php
-                        $contentErrors[$i] = $errors->get('content.' . $i)[0];
-                    @endphp
-                @else
-                    @php
-                        $contentErrors[$i] = null;
-                    @endphp
-                @endif
-            @endfor
-        @endif
-        <div>
-            <div
-                x-data='createModel(@json($items), @json($subtitles), @json($contents), @json($titleErrors), @json($contentErrors))'>
-                <template x-for="i in items.length">
-                    <div>
-                        <div class="flex justify-between font-medium text-md mt-8 w-3/4">
-                            <div>
-                                {{ __('Section ') }}
-                                <span x-text="i"></span>
-                            </div>
-                            <div class="flex gap-2">
-                                <x-secondary-button x-show="items.length > 1" class="!bg-red-400 hover:!bg-red-500"
-                                    x-on:click="removeSection(i - 1)">
-                                    {{ __('Remove section') }}
-                                </x-secondary-button>
-                                <x-secondary-button class="!bg-gray-300 hover:!bg-gray-400" x-on:click="addSection(i)">
-                                    {{ __('+ Add Section') }}
-                                </x-secondary-button>
-                            </div>
-                        </div>
-                        <template x-if="model[i - 1]">
-                            <div>
-                                <x-input-label value="Subtitle" class="pb-2 mt-[-0.5rem]" />
-                                <x-text-input class="w-3/4" x-model="model[i - 1].subtitle" name="subtitle[]"
-                                    ::value="model[i - 1].subtitle" required />
-                                <div class='text-sm text-red-600 space-y-1' x-text="titleErrors[i-1]">
-                                </div>
-
-
-                                <x-input-label value="Text" class="py-2 mt-2" />
-                                <x-textarea-input rows="7" class="w-3/4" x-model="model[i - 1].content"
-                                    name="content[]" ::value="model[i - 1].content" required />
-                                <div class='text-sm text-red-600 space-y-1' x-text="contentErrors[i-1]">
-                                </div>
-                            </div>
-                        </template>
-                    </div>
-                </template>
-            </div>
+        <div class="font-medium text-md mt-8 w-3/4">
+            <input id="x" type="hidden" name="body">
+            <trix-editor input="x" class="min-h-[16rem] trix-content">
+                {!! $body !!}
+            </trix-editor>
+            <x-input-error :messages="$errors->get('body')" />
         </div>
 
         <div class="text-right w-3/4 mt-3">
@@ -119,46 +74,22 @@
 
 
 <script>
-    document.addEventListener('alpine:init', () => {
-        Alpine.data('form', () => ({
-            addSection(index) {
-                this.items.splice(index, 0, 1)
-                this.model.splice(index, 0, {
-                    subtitle: null,
-                    content: null
-                })
-            },
-            removeSection(index) {
-                this.model.splice(index, 1)
-                this.items.splice(index, 1)
-            }
-        }))
-    })
-
-    function createModel(items, subtitles, contents, titleErrors, contentErrors) {
-        let model = []
-        for (i in items) {
-            model.push({
-                subtitle: subtitles[i],
-                content: contents[i]
-            })
-        }
-        return {
-            items: items,
-            model: model,
-            titleErrors: titleErrors,
-            contentErrors: contentErrors
-        }
-    }
-
     function showImage(ev) {
+        document.getElementById('imageAction').value = 'change';
         const file = ev.target.files[0]
 
         const reader = new FileReader()
         reader.onload = () => {
-            document.getElementById('chosenImage').src = reader.result
+            document.getElementById('chosenImage').style.backgroundImage = 'linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url(' + reader.result + ')'
+            document.getElementById('chosenImage').style.display = 'block'
         }
 
         reader.readAsDataURL(file)
+    }
+
+    function removeImage() {
+        document.getElementById('imageAction').value = 'delete';
+        document.getElementById('imageInput').value = '';
+        document.getElementById('chosenImage').style.display = 'none'
     }
 </script>

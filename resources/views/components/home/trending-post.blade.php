@@ -25,12 +25,12 @@
                     {{ $trendingPost->title }}
                 </div>
                 <div
-                    class="w-[60%] text-lg font-normal opacity-0 group-hover:animate-opacity-to-100 mt-2 animate-opacity-to-0 pointer-events-none">
-                    {{ $trendingPost->snippet }}
+                    class="w-[70%] text-lg font-normal truncate-home-trending opacity-0 group-hover:animate-opacity-to-100 mt-2 animate-opacity-to-0 pointer-events-none">
+                    {!! $trendingPost->snippet !!}
                 </div>
             </div>
 
-            <div class="flex text-xl gap-3 w-full justify-end items-end">
+            <div class="flex text-xl gap-3 w-full justify-end items-end row-start-3">
                 <div>
                     {{ $trendingPost->author }}
                 </div>

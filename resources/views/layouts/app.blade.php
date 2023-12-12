@@ -12,6 +12,21 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+    <!-- Trix text editor -->
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.0.0/dist/trix.css">
+    <script type="text/javascript" src="https://unpkg.com/trix@2.0.0/dist/trix.umd.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            addEventListener("trix-initialize", function(e) {
+                const file_tools = document.querySelector(".trix-button-group--file-tools");
+                file_tools.remove();
+            })
+            addEventListener("trix-file-accept", function(e) {
+                e.preventDefault();
+            })
+        })();
+    </script>
+
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>

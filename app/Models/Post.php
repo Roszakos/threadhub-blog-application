@@ -21,6 +21,7 @@ class Post extends Model
     protected $fillable = [
         'user_id',
         'title',
+        'body',
         'image',
         'slug'
     ];
@@ -50,11 +51,6 @@ class Post extends Model
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);
-    }
-
-    public function sections(): HasMany
-    {
-        return $this->hasMany(PostSection::class);
     }
 
     public function votes(): HasMany

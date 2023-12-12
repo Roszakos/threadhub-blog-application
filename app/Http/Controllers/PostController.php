@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use App\Http\Requests\StorePostRequest;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class PostController extends Controller
@@ -32,17 +33,10 @@ class PostController extends Controller
     public function store(StorePostRequest $request)
     {
         if ($data = $request->validated()) {
-            $data['image'] = $data['image']->store('post_images', 'public');
-            $post = Post::create($data);
-            for ($i = 0; $i < count($data['subtitle']); $i++) {
-                if ($data['subtitle'][$i] && $data['content'][$i]) {
-                    $this->createSection([
-                        'title' => $data['subtitle'][$i],
-                        'content' => $data['content'][$i],
-                        'post_id' => $post->id
-                    ]);
-                }
+            if (isset($data['image'])) {
+                $data['image'] = $data['image']->store('post_images', 'public');
             }
+            $post = Post::create($data);
         } else {
             return back();
         }
@@ -133,15 +127,8 @@ class PostController extends Controller
         if ($request->user()->cannot('update', $post)) {
             return redirect('dashboard')->with('error', 'You don\'t have access to that page.');
         }
-        $postSectionsSubtitle = [];
-        $postSectionsContent = [];
 
-        foreach ($post->sections as $section) {
-            array_push($postSectionsSubtitle, $section->title);
-            array_push($postSectionsContent, $section->content);
-        }
-
-        return view('post.edit', ['post' => $post, 'postSectionsSubtitle' => $postSectionsSubtitle, 'postSectionsContent' => $postSectionsContent]);
+        return view('post.edit', ['post' => $post]);
     }
 
     public function update(StorePostRequest $request, Post $post)
@@ -151,25 +138,23 @@ class PostController extends Controller
         }
 
         if ($data = $request->validated()) {
-            $post->update(['title' => $data['title']]);
-            $postSections = $post->sections;
-
-            for ($i = 0; $i < count($data['subtitle']); $i++) {
-                if ($data['subtitle'][$i] && $data['content'][$i]) {
-                    if (count($postSections)) {
-                        $postSections[0]->update(['title' => $data['subtitle'][$i], 'content' => $data['content'][$i]]);
-                    } else {
-                        $this->createSection([
-                            'title' => $data['subtitle'][$i],
-                            'content' => $data['content'][$i],
-                            'post_id' => $post->id
-                        ]);
-                    }
-                    $postSections->shift();
+            if ($data['imageAction'] == 'delete') {
+                if ($post->image) {
+                    Storage::disk('public')->delete($post->image);
                 }
-            }
-            foreach ($postSections as $section) {
-                $section->delete();
+                $post->update(['title' => $data['title'], 'body' => $data['body'], 'image' => null]);
+            } else if ($data['imageAction'] == 'change') {
+                if ($post->image) {
+                    Storage::disk('public')->delete($post->image);
+                }
+                if (! empty($data['image'])) {
+                    $data['image'] = $data['image']->store('post_images', 'public');
+                    $post->update(['title' => $data['title'], 'body' => $data['body'], 'image' => $data['image']]);
+                } else {
+                    $post->update(['title' => $data['title'], 'body' => $data['body']]);
+                }
+            } else {
+                $post->update(['title' => $data['title'], 'body' => $data['body']]);
             }
         } else {
             return back();
@@ -182,7 +167,8 @@ class PostController extends Controller
         if ($request->user()->cannot('delete', $post)) {
             return redirect('dashboard')->with('error', 'Unauthorized action.');
         }
-        $post->sections()->delete();
+        $post->comments()->delete();
+        $post->votes()->delete();
         $post->delete();
         return redirect()->route('dashboard');
     }
@@ -194,6 +180,7 @@ class PostController extends Controller
             ->select(
                 'posts.id',
                 'posts.title',
+                'posts.body as snippet',
                 'posts.image',
                 'posts.views',
                 'posts.slug',
@@ -205,18 +192,6 @@ class PostController extends Controller
             ->get();
 
         $trendingPost = $posts->shift();
-        $trendingPost->{'snippet'} = trim(
-            substr(
-                DB::table('post_sections')
-                    ->select('content')
-                    ->where('post_id', '=', $trendingPost->id)
-                    ->orderBy('id')
-                    ->pluck('content')
-                    ->first(),
-                0,
-                200
-            )
-        ) . '...';
         $trendingPost->{'upvotes'} = DB::table('votes')
             ->selectRaw('count(id) as votes')
             ->where('post_id', '=', $trendingPost->id)
@@ -231,18 +206,6 @@ class PostController extends Controller
             ->first();
 
         foreach ($posts as $post) {
-            $post->{'snippet'} = trim(
-                substr(
-                    DB::table('post_sections')
-                        ->select('content')
-                        ->where('post_id', '=', $post->id)
-                        ->orderBy('id')
-                        ->pluck('content')
-                        ->first(),
-                    0,
-                    100
-                )
-            ) . '...';
             $post->{'upvotes'} = DB::table('votes')
                 ->selectRaw('count(id) as votes')
                 ->where('post_id', '=', $post->id)
@@ -258,6 +221,31 @@ class PostController extends Controller
         }
 
         return view('home', ['posts' => $posts, 'trendingPost' => $trendingPost]);
+    }
+
+    public function search(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'search' => 'string|nullable|max:255'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->route('post.articles');
+        }
+
+        $search = $validator->safe()->only(['search']);
+
+        $posts = Post::where('title', 'like', '%' . $search . '%')
+            ->orWhere('');
+
+        return view('articles', ['posts' => $posts]);
+    }
+
+    public function articlesPage()
+    {
+        $posts = Post::select()->orderByDesc('created_at')->paginate(10);
+
+        return view('articles', ['posts' => $posts]);
     }
 
     private function commentReplies($comment)
@@ -301,14 +289,4 @@ class PostController extends Controller
         return $amount;
     }
 
-    private function createSection($data)
-    {
-        $validator = Validator::make($data, [
-            'title' => ['required', 'string', 'max:200'],
-            'content' => ['required', 'string', 'max:10000'],
-            'post_id' => ['required', 'numeric', 'exists:Posts,id']
-        ]);
-
-        return PostSection::create($validator->validated());
-    }
 }

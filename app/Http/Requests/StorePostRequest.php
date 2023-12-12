@@ -18,7 +18,7 @@ class StorePostRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
-            'user_id' => $this->user()->id
+            'user_id' => $this->user()->id,
         ]);
     }
 
@@ -32,25 +32,24 @@ class StorePostRequest extends FormRequest
         return [
             'user_id' => 'exists:users,id',
             'title' => 'required|string|max:200',
+            'imageAction' => 'nullable|string',
             'image' => [
                 'nullable',
                 File::image()
-                    ->max(10000)
+                    ->max(10000),
             ],
-            'subtitle' => 'required|array',
-            'content' => 'required|array',
-            'subtitle.*' => 'string|required|max:200',
-            'content.*' => 'string|required|max:10000',
+            'body' => 'required|min:50|max:10000',
         ];
     }
 
-    public function messages()
+    public function messages(): array
     {
         return [
             'required' => 'This field is required.',
             'string' => 'This field must be a string.',
-            'max:200' => 'This field cannot be longer than 200 characters.',
-            'max:10000' => 'The content of 1 section cannot be longer than 10000 characters',
+            'title.max' => 'Title cannot be longer than 200 characters.',
+            'body.min' => 'Article must be at least 50 characters long', 
+            'body.max' => 'Article cannot be longer than 10000 characters',
         ];
     }
 }

@@ -1,7 +1,11 @@
 <x-app-layout>
     <div class="w-full">
+        @if ($post->image)
         <div class="text-3xl font-bold text-center pt-3 pb-12 leading-7 tracking-wider h-[20rem] bg-gray-200 bg-cover bg-center relative"
             style="background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url({{ asset($post->image) }})">
+        @else 
+        <div class="text-3xl font-bold text-center pt-3 pb-12 leading-7 tracking-wider h-[20rem] bg-sky-300  relative">
+        @endif
             <div class="w-full bg-black/60 py-9 absolute bottom-0 px-4">
 
                 <div class="max-w-6xl mx-auto flex justify-between">
@@ -20,7 +24,8 @@
                                 {{ __('Delete post') }}
                             </x-danger-button>
                             <x-modal :name="__('delete-') . $post->slug" focusable>
-                                <form method="post" action="{{ route('post.destroy', $post->slug) }}" class="p-6 text-left">
+                                <form method="post" action="{{ route('post.destroy', $post->slug) }}"
+                                    class="p-6 text-left">
                                     @csrf
                                     @method('delete')
 
@@ -60,16 +65,11 @@
                 </div>
             </div>
         </div>
-        <div class="bg-gray-100 overflow-hidden shadow-sm min-h-[100vh] pb-10 max-w-3xl mx-auto">
+        <div class="bg-gray-100 overflow-hidden shadow-sm min-h-[90vh] pb-10 max-w-3xl mx-auto">
             <div>
-                @foreach ($post->sections as $section)
-                    <div class="text-2xl font-semibold pt-4 px-10">
-                        {{ $section['title'] }}
-                    </div>
-                    <p class="text-md font-normal px-14 whitespace-pre-line">
-                        {{ $section['content'] }}
-                    </p>
-                @endforeach
+                <div class="trix-content max-w-xl py-4 break-words m-auto">
+                    {!! $post->body !!}
+                </div>
                 <div class="mt-3 w-full text-right px-3">
                     <a href="{{ route('user.show', $post->user_id) }}" class="italic font-semibold hover:underline">
                         {{ $post->author }}
