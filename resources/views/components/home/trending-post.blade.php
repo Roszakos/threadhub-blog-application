@@ -35,7 +35,7 @@
                     {{ $trendingPost->author }}
                 </div>
                 <div>
-                    {{ date('m-d-Y', strtotime($trendingPost->created_at)) }}
+                    {{ date('d-m-Y', strtotime($trendingPost->created_at)) }}
                 </div>
             </div>
         </div>

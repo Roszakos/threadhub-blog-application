@@ -35,7 +35,7 @@
                 {{ $post->author }}
             </div>
             <div>
-                {{ date('m-d-Y', strtotime($post->created_at)) }}
+                {{ date('d-m-Y', strtotime($post->created_at)) }}
             </div>
         </div>
     </div>
