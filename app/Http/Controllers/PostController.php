@@ -223,27 +223,28 @@ class PostController extends Controller
         return view('home', ['posts' => $posts, 'trendingPost' => $trendingPost]);
     }
 
-    public function search(Request $request)
+    public function articlesPage(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'search' => 'string|nullable|max:255'
-        ]);
+        if (! $request->query('search')) {
+            $posts = Post::select()->orderByDesc('created_at')->paginate(10);
+        } else {
+            $validator = Validator::make($request->all(), [
+                'search' => 'string|nullable|max:255'
+            ]);
 
-        if ($validator->fails()) {
-            return redirect()->route('post.articles');
+            if ($validator->fails()) {
+                return redirect()->route('post.articles');
+            }
+
+            $search = $validator->safe()->only('search')['search'];
+
+            $posts = Post::select()
+                ->where('title', 'like', '%' . $search . '%')
+                ->orWhere('body', 'like', '%' . $search . '%')
+                ->orderByDesc('created_at')
+                ->paginate(10);
         }
-
-        $search = $validator->safe()->only(['search']);
-
-        $posts = Post::where('title', 'like', '%' . $search . '%')
-            ->orWhere('');
-
-        return view('articles', ['posts' => $posts]);
-    }
-
-    public function articlesPage()
-    {
-        $posts = Post::select()->orderByDesc('created_at')->paginate(10);
+        
 
         return view('articles', ['posts' => $posts]);
     }

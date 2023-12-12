@@ -43,7 +43,6 @@ Route::middleware('auth')->group(function () {
 Route::get('/post/{post:slug}', [PostController::class, 'show'])->name('post.view');
 Route::post('/comment', [CommentController::class, 'store'])->name('comment.store');
 Route::get('/user/{user}', [UserController::class, 'show'])->name('user.show');
-Route::get('/articles/search', [PostController::class, 'search'])->name('post.search');
 Route::get('/articles', [PostController::class, 'articlesPage'])->name('post.articles');
 
 require __DIR__ . '/auth.php';
