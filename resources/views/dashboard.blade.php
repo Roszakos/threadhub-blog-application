@@ -6,8 +6,11 @@
     </x-slot>
 
     <div class="py-12">
-        @isset($error))
-            {{$error}}
+        @if (session('error'))
+            <x-notification status="error" :message="session('error')"/>
+        @endif
+        @if (session('success'))
+            <x-notification status="success" :message="session('success')"/>
         @endif
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg ">
@@ -23,15 +26,15 @@
                     </div>
 
                     @if (count($posts))
-                    <div class="grid gap-4 grid-cols-2 mt-5">
-                        @foreach ($posts as $post)
-                            <x-post.dashboard-post-card :post="$post" />
-                        @endforeach
-                    </div>
+                        <div class="grid gap-4 grid-cols-2 mt-5">
+                            @foreach ($posts as $post)
+                                <x-post.dashboard-post-card :post="$post" />
+                            @endforeach
+                        </div>
                     @else
-                    <div class="text-center mt-2 w-full">
-                        You haven't published any articles yet.
-                    </div>
+                        <div class="text-center mt-2 w-full">
+                            {{ __('You haven\'t published any articles yet.') }}
+                        </div>
                     @endif
                     <div class="mt-5">
                         {{ $posts->links() }}

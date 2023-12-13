@@ -41,7 +41,7 @@ class PostController extends Controller
             return back();
         }
 
-        return redirect()->route('post.view', [$post]);
+        return redirect()->route('post.view', [$post])->with('success', 'Article created successfully');
     }
 
     public function show(Post $post, Request $request)
@@ -159,7 +159,7 @@ class PostController extends Controller
         } else {
             return back();
         }
-        return redirect()->route('post.view', [$post]);
+        return redirect()->route('post.view', [$post])->with('success', 'Article updated successfully');
     }
 
     public function destroy(Request $request, Post $post)
@@ -170,7 +170,7 @@ class PostController extends Controller
         $post->comments()->delete();
         $post->votes()->delete();
         $post->delete();
-        return redirect()->route('dashboard');
+        return redirect()->route('dashboard')->with('success', 'Article deleted successfully');
     }
 
     public function getPostsForHome()
@@ -189,7 +189,7 @@ class PostController extends Controller
                 'users.nickname as author'
             )
             ->orderBy('created_at', 'desc')
-            ->limit(7)
+            ->limit(4)
             ->get();
 
         if (count($posts)) {

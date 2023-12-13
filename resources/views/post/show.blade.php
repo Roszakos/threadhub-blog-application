@@ -1,4 +1,10 @@
 <x-app-layout>
+    @if (session('error'))
+            <x-notification status="error" :message="session('error')"/>
+        @endif
+        @if (session('success'))
+            <x-notification status="success" :message="session('success')"/>
+        @endif
     <div class="w-full">
         @if ($post->image)
         <div class="text-3xl font-bold text-center pt-3 pb-12 leading-7 tracking-wider h-[20rem] bg-gray-200 bg-cover bg-center relative"
