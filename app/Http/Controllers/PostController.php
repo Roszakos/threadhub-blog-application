@@ -225,6 +225,7 @@ class PostController extends Controller
 
     public function articlesPage(Request $request)
     {
+        $search = '';
         if (! $request->query('search')) {
             $posts = Post::select()->orderByDesc('created_at')->paginate(10);
         } else {
@@ -244,9 +245,8 @@ class PostController extends Controller
                 ->orderByDesc('created_at')
                 ->paginate(10);
         }
-        
 
-        return view('articles', ['posts' => $posts]);
+        return view('articles', ['posts' => $posts, 'search' => $search]);
     }
 
     private function commentReplies($comment)

@@ -36,7 +36,7 @@
                     </div>
                 </div>
                 @if ($user->description)
-                    <div class="bg-gray-100 italic h-[4rem] px-4 py-2 mt-2 whitespace-pre-line">
+                    <div class="bg-gray-100 italic min-h-[2rem] px-6 py-2 mt-2">
                         {{ $user->description }}
                     </div>
                 @endif
