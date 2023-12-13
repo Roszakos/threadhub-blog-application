@@ -30,6 +30,7 @@
                 Create new post
             </a>
         </div>
+        @endif
     </div>
 </x-app-layout>
 

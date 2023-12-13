@@ -175,6 +175,7 @@ class PostController extends Controller
 
     public function getPostsForHome()
     {
+        $trendingPost = null;
         $posts = DB::table('posts')
             ->join('users', 'users.id', '=', 'posts.user_id')
             ->select(
@@ -191,33 +192,35 @@ class PostController extends Controller
             ->limit(7)
             ->get();
 
-        $trendingPost = $posts->shift();
-        $trendingPost->{'upvotes'} = DB::table('votes')
-            ->selectRaw('count(id) as votes')
-            ->where('post_id', '=', $trendingPost->id)
-            ->where('vote', '=', 1)
-            ->pluck('votes')
-            ->first();
-        $trendingPost->{'downvotes'} = DB::table('votes')
-            ->selectRaw('count(id) as votes')
-            ->where('post_id', '=', $trendingPost->id)
-            ->where('vote', '=', 2)
-            ->pluck('votes')
-            ->first();
-
-        foreach ($posts as $post) {
-            $post->{'upvotes'} = DB::table('votes')
+        if (count($posts)) {
+            $trendingPost = $posts->shift();
+            $trendingPost->{'upvotes'} = DB::table('votes')
                 ->selectRaw('count(id) as votes')
-                ->where('post_id', '=', $post->id)
+                ->where('post_id', '=', $trendingPost->id)
                 ->where('vote', '=', 1)
                 ->pluck('votes')
                 ->first();
-            $post->{'downvotes'} = DB::table('votes')
+            $trendingPost->{'downvotes'} = DB::table('votes')
                 ->selectRaw('count(id) as votes')
-                ->where('post_id', '=', $post->id)
+                ->where('post_id', '=', $trendingPost->id)
                 ->where('vote', '=', 2)
                 ->pluck('votes')
                 ->first();
+
+            foreach ($posts as $post) {
+                $post->{'upvotes'} = DB::table('votes')
+                    ->selectRaw('count(id) as votes')
+                    ->where('post_id', '=', $post->id)
+                    ->where('vote', '=', 1)
+                    ->pluck('votes')
+                    ->first();
+                $post->{'downvotes'} = DB::table('votes')
+                    ->selectRaw('count(id) as votes')
+                    ->where('post_id', '=', $post->id)
+                    ->where('vote', '=', 2)
+                    ->pluck('votes')
+                    ->first();
+            }
         }
 
         return view('home', ['posts' => $posts, 'trendingPost' => $trendingPost]);
