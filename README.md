@@ -5,7 +5,7 @@
 
 Requirements:
 - [Composer](https://getcomposer.org/download/)
-- PHP version 8.1 and newer
+- PHP version 8.1 or newer
 
 Installation:
 1. Rename .env.example file to .env
@@ -14,6 +14,8 @@ Installation:
 3. Run following commands
 ```
 > composer install
+
+> npm install
 
 > php artisan key:generate
 
