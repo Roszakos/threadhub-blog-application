@@ -27,7 +27,7 @@
 
         <div>
             <x-input-label for="description" :value="__('Description')" />
-            <x-textarea-input id="description" name="description" type="text" class="mt-1 block w-full" :value="old('description', $user->description)"
+            <x-textarea-input id="description" name="description" type="text" rows="4" class="mt-1 block w-full" :value="old('description', $user->description)"
                 required autofocus autocomplete="description">
                 {{old('description', $user->description)}}
             </x-textarea-input>

@@ -49,4 +49,8 @@
             </x-primary-button>
         </div>
     </form>
+    <div class="mt-2">
+        <span>{{__('Alreade have an account?')}}</span>
+        <a href="{{route('login')}}" class="text-blue-600">{{__('Sign in')}}</a>
+    </div>
 </x-guest-layout>

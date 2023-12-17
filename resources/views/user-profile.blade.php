@@ -1,8 +1,8 @@
 <x-app-layout>
-    <div id="container" class="max-w-2xl m-auto">
-        <div class="min-h-[10rem] bg-white m-auto mt-4">
-            <div class="p-4">
-                <div class="flex justify-between">
+    <div id="container" class="max-w-3xl m-auto">
+        <div class="min-h-[10rem] bg-white m-auto md:mt-4">
+            <div class="py-4 px-2 md:px-4">
+                <div class="block sm:flex justify-between">
                     <div class="flex gap-2">
                         <div>
                             @if ($user->image)
@@ -11,7 +11,8 @@
                             @endif
                         </div>
                         <div class="flex flex-col">
-                            <a href="{{route('user.show', $user->id)}}" class="font-semibold text-2xl tracking-wide hover:underline">
+                            <a href="{{ route('user.show', $user->id) }}"
+                                class="font-semibold text-2xl tracking-wide hover:underline">
                                 {{ $user->nickname }}
                             </a>
                             <div class="flex gap-1">
@@ -22,11 +23,21 @@
                                     {{ $user->last_name }}
                                 </div>
                             </div>
+                            <div class="flex sm:hidden flex-col sm:items-end justify-between max-sm:mt-3">
+                                <div>
+                                    {{ __('Joined us ') . date('m-d-Y', strtotime($user->created_at)) }}
+                                </div>
+                                @if ($accountOwner)
+                                    <a href="{{ route('profile.edit') }}" class="text-sky-400 hover:underline">
+                                        {{ __('Account settings') }}
+                                    </a>
+                                @endif
+                            </div>
                         </div>
                     </div>
-                    <div class="flex flex-col items-end justify-between">
+                    <div class="hidden sm:flex flex-col sm:items-end justify-between max-sm:mt-3">
                         <div>
-                            {{ __('Joined us ') . date('m-d-Y', strtotime($user->created_at)) }}
+                            {{ __('Joined us ') . date('d-m-Y', strtotime($user->created_at)) }}
                         </div>
                         @if ($accountOwner)
                             <a href="{{ route('profile.edit') }}" class="text-sky-400 hover:underline">
@@ -36,8 +47,8 @@
                     </div>
                 </div>
                 @if ($user->description)
-                    <div class="bg-gray-100 italic min-h-[2rem] px-6 py-2 mt-2">
-                        {{ $user->description }}
+                    <div class="bg-gray-100 italic min-h-[2rem] px-3 py-2 mt-2">
+                        {{__(',,') . $user->description . __('\'\'')}}
                     </div>
                 @endif
             </div>
@@ -93,11 +104,9 @@
                     </template>
                     <template x-if="isSelected('comments')">
                         <div>
-
                             @if (count($comments))
-
                                 @foreach ($comments as $comment)
-                                    <x-user-profile.comment-card :comment="$comment" />
+                                    <x-user-profile.comment-card :comment="$comment" :accountOwner="$accountOwner" />
                                 @endforeach
                             @else
                                 <div class="text-xs w-full text-center py-4">

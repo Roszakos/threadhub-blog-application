@@ -3,10 +3,10 @@
     <div>
 
         @if ($trendingPost->image)
-            <div class="relative h-[30rem] bg-black/20 rounded-[1rem] bg-cover bg-center group"
+            <div class="relative sm:h-[30rem] h-[25rem] bg-black/20 sm:rounded-[1rem] bg-cover bg-center group"
                 style="background-image: url({{ asset($trendingPost->image) }})">
             @else
-                <div class="relative h-[30rem] bg-black/20 rounded-[1rem]">
+                <div class="relative sm:h-[30rem] h-[25rem] bg-black/20 sm:rounded-[1rem]">
         @endif
         <div title="Views"
             class="absolute top-2 right-2 flex gap-1 z-10 text-white group-hover:bg-transparent transition duration-700 bg-black/70 py-1 px-2 rounded-[1.5rem]">
@@ -19,7 +19,7 @@
             {{ $trendingPost->views }}
         </div>
         <div
-            class="post absolute bottom-0 pb-5 pt-4 bg-black/70 text-white w-full px-4 min-h-[8rem] grid rounded-b-[1rem] grid-flow-row grid-rows-3 group-hover:animate-expand-to-full animate-shrink-from-full opacity-0">
+            class="post absolute bottom-0 pb-5 pt-4 bg-black/70 text-white w-full px-4 min-h-[8rem] grid sm:rounded-b-[1rem] grid-flow-row grid-rows-3 group-hover:animate-expand-to-full animate-shrink-from-full opacity-0">
             <div class="text-3xl font-bold tracking-wider row-span-2">
                 <div>
                     {{ $trendingPost->title }}
@@ -41,7 +41,7 @@
         </div>
     </div>
 </a>
-<div class="flex gap-2 justify-end pt-1">
+<div class="flex gap-2 justify-end pt-1 max-sm:px-2">
     <div class="flex items-center gap-1 text-lg">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
             stroke="currentColor" class="w-6 h-6">

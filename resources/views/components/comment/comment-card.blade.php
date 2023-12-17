@@ -61,9 +61,9 @@
     }
 }" class="mt-4" id="comment-{{ $comment->id }}">
     {{ $slot }}
-    <div class="flex py-2 bg-slate-300 border border-slate-500 rounded-md  min-h-[6rem]">
+    <div class="flex flex-col py-2 bg-slate-300 border border-slate-500 rounded-md  min-h-[6rem]">
 
-        <div class="w-1/5 border-r border-black px-3 flex flex-col justify-between">
+        <div class="flex w-full px-3 justify-between pb-2">
             @if ($comment->user_id)
             <a href="{{route('user.show', $comment->user_id)}}" class="font-semibold text-xl hover:text-sky-700 transition">
                 {{ $comment->author }}
@@ -78,8 +78,8 @@
             </div>
         </div>
 
-        <div class="px-1 w-4/5 flex flex-col justify-between pl-3">
-            <div class="flex justify-between gap-2 ">
+        <div class="px-1 w-full flex flex-col justify-between pl-3">
+            <div class="flex justify-between gap-2">
                 <template x-if="!showFull">
                     <div class="first-line:leading-[0rem]">
                         <span id="comment-content-{{ $comment->id }}" class="whitespace-pre-line ">

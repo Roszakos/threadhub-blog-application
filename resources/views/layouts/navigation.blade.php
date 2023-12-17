@@ -6,7 +6,6 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('home') }}">
-                        {{-- <x-application-logo class="block h-9 w-auto fill-current text-gray-800" /> --}}
                         <div class="font-bold text-xl">
                             ThreadHub
                         </div>
@@ -48,7 +47,7 @@
                         </x-slot>
 
                         <x-slot name="content">
-                            <x-dropdown-link :href="route('user.show',  Auth::user()->id)">
+                            <x-dropdown-link :href="route('user.show', Auth::user()->id)">
                                 {{ __('Profile') }}
                             </x-dropdown-link>
 
@@ -102,8 +101,14 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
+            <x-responsive-nav-link :href="route('home')" :active="request()->routeIs('home')">
+                {{ __('Home') }}
+            </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('post.articles')" :active="request()->routeIs('post.articles')">
+                {{ __('Articles') }}
             </x-responsive-nav-link>
         </div>
 
@@ -111,13 +116,16 @@
         @auth
             <div class="pt-4 pb-1 border-t border-gray-200">
                 <div class="px-4">
-                    <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
+                    <div class="font-medium text-base text-gray-800">{{ Auth::user()->nickname }}</div>
                     <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
                 </div>
 
                 <div class="mt-3 space-y-1">
-                    <x-responsive-nav-link :href="route('profile.edit')">
+                    <x-responsive-nav-link :href="route('user.show', Auth::user()->id)" :active="request()->routeIs('user.show')">
                         {{ __('Profile') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('profile.edit')" :active="request()->routeIs('profile.edit')">
+                        {{ __('Settings') }}
                     </x-responsive-nav-link>
 
                     <!-- Authentication -->

@@ -1,11 +1,11 @@
 @props(['post'])
-<div>
+<div class="max-lg:mt-4">
     @if ($post->image)
         <a href="{{ route('post.view', $post->slug) }}"
-            class="relative block w-full h-[90%] bg-black/20 rounded-[1rem] bg-cover bg-center group"
+            class="relative block w-full lg:h-[90%] h-[17rem] bg-black/20 rounded-[1rem] bg-cover bg-center group"
             style="background-image: url({{ asset($post->image) }})">
         @else
-            <a href="{{ route('post.view', $post->slug) }}" class="relative bg-black/20 rounded-[1rem]">
+            <a href="{{ route('post.view', $post->slug) }}" class="relative bg-black/20 rounded-[1rem] group">
     @endif
     <div title="Views"
         class="absolute top-2 right-2 z-10 flex gap-1 transition duration-700 group-hover:bg-transparent text-white bg-black/30 py-1 px-2 rounded-[1.5rem]">
@@ -21,7 +21,7 @@
         class="post absolute bottom-0 pb-2 pt-2 bg-black/70 text-white w-full px-4 min-h-[100px] rounded-b-[1rem] grid grid-flow-row grid-rows-3
          group-hover:animate-expand-to-full animate-shrink-from-full opacity-0">
         <div class="text-xl font-bold tracking-wider row-span-2 w-full">
-            <div>
+            <div class="truncate-home-slider-item-title w-[80%]">
                 {{ $post->title }}
             </div>
             <div

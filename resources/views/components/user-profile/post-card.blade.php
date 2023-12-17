@@ -1,10 +1,10 @@
 @props(['post'])
 <a href="{{ route('post.view', $post->slug) }}"
-    class="m-auto py-4 transition px-4 block
+    class="m-auto sm:py-4 py-7 transition sm:px-4 block
     hover:shadow-[0_0_15px_6px_rgba(0,0,0,0.3)]">
-    <div class="flex gap-4 ">
+    <div class="sm:flex sm:gap-4 ">
         @if ($post->image)
-            <div class="relative bg-center shrink-0 bg-slate-300 border-gray-500 bg-cover border rounded-[1rem] min-h-[14rem] w-[55%] "
+            <div class="relative bg-center shrink-0 bg-slate-300 border-gray-500 bg-cover sm:border sm:rounded-[1rem] min-h-[14rem] sm:w-[55%] w-full "
                 style="background-image: url({{ asset($post->image) }})">
                 <div title="Views"
                     class="absolute top-2 left-2 flex gap-1 text-white bg-black/30 py-1 px-2 rounded-[1.5rem]">
@@ -18,7 +18,7 @@
                 </div>
             </div>
         @else
-            <div class="relative bg-center shrink-0 bg-cover border border-gray-500 rounded-[1rem] min-h-[14rem] w-[55%]"
+            <div class="relative bg-center shrink-0 bg-cover sm:border border-gray-500 sm:rounded-[1rem] min-h-[14rem] sm:w-[55%] w-full"
                 style="background-image: url('https://wmc-cfb.ca/wp-content/uploads/2019/03/default-featured-post-image.png')">
                 <div title="Views"
                     class="absolute top-2 left-2 flex gap-1 text-white bg-black/30 py-1 px-2 rounded-[1.5rem]">
@@ -32,11 +32,11 @@
                 </div>
             </div>
         @endif
-        <div class="flex flex-col justify-between w-[45%]">
-            <div class="font-bold text-xl">
+        <div class="flex flex-col justify-between sm:w-[45%] max-sm:px-2">
+            <div class="font-bold text-xl truncate-home-slider-item">
                 {{ $post->title }}
             </div>
-            <div class="w-full flex justify-between text-lg">
+            <div class="w-full flex justify-between items-end text-lg">
                 <div class="flex gap-2">
                     <div class="flex items-center gap-1 ">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -47,7 +47,7 @@
 
                         {{ $post->votes->where('vote', '=', '1')->count() }}
                     </div>
-                    <div class="flex gap-1 items-center ">
+                    <div class="flex gap-1 items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="w-4 h-4">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -58,7 +58,12 @@
                     </div>
                 </div>
                 <div>
-                    {{ date('m-d-Y H:i', strtotime($post->created_at)) }}
+                    <div class="text-right font-medium">
+                        {{$post->user->nickname}}
+                    </div>
+                    <div>
+                        {{ date('m-d-Y H:i', strtotime($post->created_at)) }}
+                    </div>
                 </div>
             </div>
         </div>

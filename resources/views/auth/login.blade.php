@@ -44,4 +44,8 @@
             </x-primary-button>
         </div>
     </form>
+    <div class="mt-2">
+        <span>{{__('Don\'t have an account yet?')}}</span>
+        <a href="{{route('register')}}" class="text-blue-600">{{__('Register for free')}}</a>
+    </div>
 </x-guest-layout>

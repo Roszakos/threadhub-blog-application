@@ -1,7 +1,8 @@
 <x-app-layout>
     <x-search :searchValue="$search"/>
-    <div id="container" class="max-w-3xl m-auto">
-        <div class="min-h-[84vh] bg-white m-auto pt-3">
+    <div class="min-h-screen bg-gray-50">
+        <div id="container" class="max-w-3xl m-auto">
+        <div class="min-h-[84vh] bg-gray-50 m-auto pt-3">
             @if ($search)
                 <div class="font-semibold py-3 px-4 text-lg">
                     @if (count($posts) == 1)
@@ -25,5 +26,6 @@
             @endif
 
         </div>
+    </div>
     </div>
 </x-app-layout>

@@ -46,6 +46,8 @@ class PostController extends Controller
 
     public function show(Post $post, Request $request)
     {
+        $isOwner = false;
+        
         if (!Cookie::get('post-' . $post->id)) {
             Cookie::queue(Cookie::make('post-' . $post->id, true, 60));
             $post->incrementViewCount();
