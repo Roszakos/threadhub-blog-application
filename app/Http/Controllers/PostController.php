@@ -178,6 +178,31 @@ class PostController extends Controller
     public function getPostsForHome()
     {
         $trendingPost = null;
+        for ($i = 1; $i < 5; $i++) {
+            $date = date('Y-m-d H:i:s', strtotime('-' . $i . 'week'));
+            $latestPosts = Post::where('created_at', '>', $date)
+                ->where('views', '>', '5')
+                ->orderByDesc('created_at')
+                ->get();
+            if (count($latestPosts) > 3) {
+                break;
+            }
+        }
+
+        if (count($latestPosts)) {
+            foreach ($latestPosts as $post) {
+                $post->{'activity'} =  $post->votes()->count() / $post->views;
+            }
+            $latestPosts = $latestPosts->sortByDesc('activity');
+            $trendingPost = $latestPosts->first();
+        }
+
+        if ($trendingPost) {
+            $excludeFromQuery = $trendingPost->id;
+        } else {
+            $excludeFromQuery = null;
+        }
+
         $posts = DB::table('posts')
             ->join('users', 'users.id', '=', 'posts.user_id')
             ->select(
@@ -190,12 +215,19 @@ class PostController extends Controller
                 'posts.created_at',
                 'users.nickname as author'
             )
+            ->whereNot('posts.id', '=', $excludeFromQuery)
             ->orderBy('created_at', 'desc')
             ->limit(4)
             ->get();
 
         if (count($posts)) {
-            $trendingPost = $posts->shift();
+            if (! $trendingPost) {
+                $trendingPost = $posts->shift();
+            } else {
+                $posts->pop();
+            }
+
+            
             $trendingPost->{'upvotes'} = DB::table('votes')
                 ->selectRaw('count(id) as votes')
                 ->where('post_id', '=', $trendingPost->id)
@@ -208,6 +240,7 @@ class PostController extends Controller
                 ->where('vote', '=', 2)
                 ->pluck('votes')
                 ->first();
+            $trendingPost->{'snippet'} = $trendingPost->body;
 
             foreach ($posts as $post) {
                 $post->{'upvotes'} = DB::table('votes')
@@ -222,7 +255,7 @@ class PostController extends Controller
                     ->where('vote', '=', 2)
                     ->pluck('votes')
                     ->first();
-            }
+            }    
         }
 
         return view('home', ['posts' => $posts, 'trendingPost' => $trendingPost]);
