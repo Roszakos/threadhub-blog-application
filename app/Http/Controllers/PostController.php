@@ -47,7 +47,7 @@ class PostController extends Controller
     public function show(Post $post, Request $request)
     {
         $isOwner = false;
-        
+
         if (!Cookie::get('post-' . $post->id)) {
             Cookie::queue(Cookie::make('post-' . $post->id, true, 60));
             $post->incrementViewCount();
@@ -60,7 +60,7 @@ class PostController extends Controller
                 ->where('user_id', '=', $request->user()->id)
                 ->pluck('vote')
                 ->first();
-            if ($request->user()->id === $post->user_id) {
+            if ($request->user()->id === $post->user_id || $request->user()->role === 'admin') {
                 $isOwner = true;
             } else {
                 $isOwner = false;
@@ -94,19 +94,23 @@ class PostController extends Controller
             ->orderByDesc('created_at')
             ->get();
 
-        $comments = $comments->map(function ($comment) {
+        $comments = $comments->map(function ($comment) use ($request) {
             $comment->{'replies'} = $this->commentReplies($comment);
             $dt = Carbon::create($comment->created_at);
             $comment->{'posted'} = $dt->diffForHumans();
+
             if ($comment->user_id) {
                 $comment->author = User::find($comment->user_id)->nickname;
-                if (Auth::user() && $comment->user_id === Auth::user()->id) {
+                if ($request->user() && $comment->user_id === $request->user()->id) {
                     $comment->{'owner'} = true;
                 } else {
                     $comment->{'owner'} = false;
                 }
             } else {
                 $comment->{'owner'} = false;
+            }
+            if ($request->user() && $request->user()->role === 'admin') {
+                $comment->{'owner'} = true;
             }
             return $comment;
         });
@@ -149,7 +153,7 @@ class PostController extends Controller
                 if ($post->image) {
                     Storage::disk('public')->delete($post->image);
                 }
-                if (! empty($data['image'])) {
+                if (!empty($data['image'])) {
                     $data['image'] = $data['image']->store('post_images', 'public');
                     $post->update(['title' => $data['title'], 'body' => $data['body'], 'image' => $data['image']]);
                 } else {
@@ -191,7 +195,7 @@ class PostController extends Controller
 
         if (count($latestPosts)) {
             foreach ($latestPosts as $post) {
-                $post->{'activity'} =  $post->votes()->count() / $post->views;
+                $post->{'activity'} = $post->votes()->count() / $post->views;
             }
             $latestPosts = $latestPosts->sortByDesc('activity');
             $trendingPost = $latestPosts->first();
@@ -221,13 +225,13 @@ class PostController extends Controller
             ->get();
 
         if (count($posts)) {
-            if (! $trendingPost) {
+            if (!$trendingPost) {
                 $trendingPost = $posts->shift();
             } else {
                 $posts->pop();
             }
 
-            
+
             $trendingPost->{'upvotes'} = DB::table('votes')
                 ->selectRaw('count(id) as votes')
                 ->where('post_id', '=', $trendingPost->id)
@@ -255,7 +259,7 @@ class PostController extends Controller
                     ->where('vote', '=', 2)
                     ->pluck('votes')
                     ->first();
-            }    
+            }
         }
 
         return view('home', ['posts' => $posts, 'trendingPost' => $trendingPost]);
@@ -264,7 +268,7 @@ class PostController extends Controller
     public function articlesPage(Request $request)
     {
         $search = '';
-        if (! $request->query('search')) {
+        if (!$request->query('search')) {
             $posts = Post::select()->orderByDesc('created_at')->paginate(10);
         } else {
             $validator = Validator::make($request->all(), [
@@ -308,6 +312,9 @@ class PostController extends Controller
                     }
                 } else {
                     $comment->{'owner'} = false;
+                }
+                if (Auth::user() && Auth::user()->role === 'admin') {
+                    $comment->{'owner'} = true;
                 }
                 return $comment;
             });
