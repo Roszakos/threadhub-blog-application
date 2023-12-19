@@ -176,6 +176,11 @@ class PostController extends Controller
         $post->comments()->delete();
         $post->votes()->delete();
         $post->delete();
+
+        if (str_contains($request->header('referer'), 'admin')) {
+            return redirect()->route('admin.dashboard')->with('success', 'Article deleted successfully');
+        }
+
         return redirect()->route('dashboard')->with('success', 'Article deleted successfully');
     }
 

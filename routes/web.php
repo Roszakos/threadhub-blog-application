@@ -6,6 +6,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\VoteController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AdminDashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +24,9 @@ Route::get('/', [PostController::class, 'getPostsForHome'])->name('home');
 Route::get('/dashboard', [PostController::class, 'index'])
     ->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::delete('/user/{user}', [UserController::class, 'destroy'])
+    ->middleware(['auth', 'admin'])->name('user.destroy');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -38,7 +42,9 @@ Route::middleware('auth')->group(function () {
 
     Route::delete('/comment/{comment}', [CommentController::class, 'destroy'])->name('comment.destroy');
     Route::put('/comment/{comment}', [CommentController::class, 'update'])->name('comment.update');
+    Route::get('/admin/dashboard', [AdminDashboardController::class, 'show'])->name('admin.dashboard');
 });
+
 
 Route::get('/post/{post:slug}', [PostController::class, 'show'])->name('post.view');
 Route::post('/comment', [CommentController::class, 'store'])->name('comment.store');

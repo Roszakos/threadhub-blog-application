@@ -32,4 +32,22 @@ class UserController extends Controller
         }
         return view('user-profile', ['user' => $user, 'posts' => $posts, 'comments' => $comments, 'accountOwner' => $accountOwner]);
     }
+
+    public function destroy(User $user, Request $request) 
+    {
+        if ($request->user()->role !== 'admin') {
+            return redirect()->route('dashboard')->with('error', 'Unauthorized action');
+        }
+        $request->session()->flash('userId', $user->id);
+        $request->validateWithBag('userDeletion', [
+            'password' => ['required', 'current_password']
+        ]);
+
+        $user->comments()->delete();
+        $user->posts()->delete();
+        $user->votes()->delete();
+        $user->delete();
+
+        return redirect()->route('admin.dashboard')->with('success', 'User deleted successfully');
+    }
 }
