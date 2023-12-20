@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+td, th {
+        padding: 10px 0;
+}
+
 .truncate-home-slider-item {
    overflow: hidden;
    text-overflow: ellipsis;

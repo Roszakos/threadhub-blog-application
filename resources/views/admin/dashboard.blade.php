@@ -102,7 +102,7 @@
                     }
                 }
             }"
-                class="max-w-7xl mx-auto mt-10 bg-white rounded-md min-h-[75vh] px-4 shadow-lg">
+                class="max-w-7xl mx-auto mt-10 py-4 bg-white rounded-md min-h-[75vh] px-4 shadow-lg">
                 <div class="flex gap-4 pt-3 pl-2 text-lg font-medium tracking-wide">
                     <div x-on:click="changeSelected('users')"
                         class="cursor-pointer pb-2 border-blue-300 hover:border-b hover:border-gray-300"
@@ -174,6 +174,9 @@
                             </tr>
                         @endforeach
                     </table>
+                    <div class="px-2 mt-4">
+                        {{ $posts->links() }}
+                    </div>
                 </template>
 
                 <template x-if="isSelected('posts')">
@@ -230,7 +233,7 @@
                                 </tr>
                             @endforeach
                         </table>
-                        <div class="px-4 mt-4">
+                        <div class="px-2 mt-4">
                             {{ $posts->links() }}
                         </div>
                     </div>
@@ -242,8 +245,5 @@
 </x-app-layout>
 
 <style>
-    td,
-    th {
-        padding: 10px 0;
-    }
+    
 </style>
