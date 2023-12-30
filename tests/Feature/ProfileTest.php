@@ -2,9 +2,12 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use App\Models\Post;
+use App\Models\User;
+use App\Models\Vote;
+use App\Models\Comment;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ProfileTest extends TestCase
 {
@@ -28,7 +31,7 @@ class ProfileTest extends TestCase
         $response = $this
             ->actingAs($user)
             ->patch('/profile', [
-                'name' => 'Test User',
+                'nickname' => 'Test User',
                 'email' => 'test@example.com',
             ]);
 
@@ -38,7 +41,7 @@ class ProfileTest extends TestCase
 
         $user->refresh();
 
-        $this->assertSame('Test User', $user->name);
+        $this->assertSame('Test User', $user->nickname);
         $this->assertSame('test@example.com', $user->email);
         $this->assertNull($user->email_verified_at);
     }
@@ -50,7 +53,7 @@ class ProfileTest extends TestCase
         $response = $this
             ->actingAs($user)
             ->patch('/profile', [
-                'name' => 'Test User',
+                'nickname' => 'Test User',
                 'email' => $user->email,
             ]);
 
@@ -95,5 +98,39 @@ class ProfileTest extends TestCase
             ->assertRedirect('/profile');
 
         $this->assertNotNull($user->fresh());
+    }
+
+    public function test_all_of_users_data_is_deleted_when_they_delete_their_account(): void
+    {
+        $user = User::factory()->create();
+        $posts = Post::factory(3)->create([
+            'user_id' => $user->id
+        ]);
+        $comments = Comment::factory(3)->create([
+            'user_id' => $user->id
+        ]);
+        $votes = Vote::factory(3)->create([
+            'user_id' => $user->id
+        ]);
+
+        $this->assertEquals(count($posts->fresh()), 3);
+        $this->assertEquals(count($comments->fresh()), 3);
+        $this->assertEquals(count($votes->fresh()), 3);
+
+        $response = $this
+            ->actingAs($user)
+            ->delete('/profile', [
+                'password' => 'password',
+            ]);
+
+        $response
+            ->assertSessionHasNoErrors()
+            ->assertRedirect('/');
+
+        $this->assertGuest();
+        $this->assertNull($user->fresh());
+        $this->assertEquals(count($posts->fresh()), 0);
+        $this->assertEquals(count($comments->fresh()), 0);
+        $this->assertEquals(count($votes->fresh()), 0);
     }
 }

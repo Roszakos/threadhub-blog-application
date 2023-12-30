@@ -42,7 +42,7 @@ Route::middleware('auth')->group(function () {
 
     Route::delete('/comment/{comment}', [CommentController::class, 'destroy'])->name('comment.destroy');
     Route::put('/comment/{comment}', [CommentController::class, 'update'])->name('comment.update');
-    Route::get('/admin/dashboard', [AdminDashboardController::class, 'show'])->name('admin.dashboard');
+    Route::get('/admin/dashboard', [AdminDashboardController::class, 'show'])->middleware(['admin'])->name('admin.dashboard');
 });
 
 

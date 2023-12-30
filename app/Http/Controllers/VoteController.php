@@ -3,10 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Vote;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use App\Http\Requests\VoteRequest;
-use Illuminate\Support\Facades\Validator;
 
 class VoteController extends Controller
 {
@@ -29,12 +26,19 @@ class VoteController extends Controller
                     ->where('post_id', '=', $data['post_id'])
                     ->where('user_id', '=', $data['user_id'])
                     ->first();
-
-        if ($vote->update(['vote' => $data['vote']])) {
-            return response('success', 200);
+        
+        if ($vote) {
+            if ($request->user()->cannot('update', $vote)) {
+                return redirect()->route('dashboard')->with('error', 'Unatuhorized action');
+            }
+            if ($vote->update(['vote' => $data['vote']])) {
+                return response('success', 200);
+            } else {
+                return response('error', 500);
+            }
         } else {
-            return response('error', 500);
-        }
+            return redirect()->route('dashboard')->with('error', 'Unauthorized action');
+        } 
     }
 
     public function destroy(VoteRequest $request)
@@ -46,10 +50,19 @@ class VoteController extends Controller
             ->where('user_id', '=', $data['user_id'])
             ->first();
 
-        if ($vote->delete()) {
-            return response('success', 200);
+        if ($vote) {
+            if ($request->user()->cannot('update', $vote)) {
+                return redirect()->route('dashboard')->with('error', 'Unauthorized action');
+            }
+            if ($vote->delete()) {
+                return response('success', 200);
+            } else {
+                return response('error', 500);
+            }
         } else {
-            return response('error', 500);
+            return redirect()->route('dashboard')->with('error', 'Unauthorized action');
         }
+
+        
     }
 }

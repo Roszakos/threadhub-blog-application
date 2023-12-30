@@ -14,7 +14,7 @@
                     {{ __('No articles have been published yet. ') }}
                 </span>
                 <a href="{{ route('post.create') }}" class="text-sky-300 hover:text-sky-400 hover:underline">
-                    {{ __('Create new post') }}
+                    {{ __('Create new article') }}
                 </a>
             </div>
         @endif

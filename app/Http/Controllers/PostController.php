@@ -144,12 +144,12 @@ class PostController extends Controller
         }
 
         if ($data = $request->validated()) {
-            if ($data['imageAction'] == 'delete') {
+            if (isset($data['imageAction']) && $data['imageAction'] == 'delete') {
                 if ($post->image) {
                     Storage::disk('public')->delete($post->image);
                 }
                 $post->update(['title' => $data['title'], 'body' => $data['body'], 'image' => null]);
-            } else if ($data['imageAction'] == 'change') {
+            } else if (isset($data['imageAction']) && $data['imageAction'] == 'change') {
                 if ($post->image) {
                     Storage::disk('public')->delete($post->image);
                 }
@@ -173,6 +173,10 @@ class PostController extends Controller
         if ($request->user()->cannot('delete', $post)) {
             return redirect('dashboard')->with('error', 'Unauthorized action.');
         }
+        if ($post->image) {
+            Storage::disk('public')->delete($post->image);
+        }
+
         $post->comments()->delete();
         $post->votes()->delete();
         $post->delete();
@@ -200,9 +204,10 @@ class PostController extends Controller
 
         if (count($latestPosts)) {
             foreach ($latestPosts as $post) {
-                $post->{'activity'} = $post->votes()->count() / $post->views;
+                $activity = ($post->votes()->count() + 0.2 * $post->comments()->count()) / $post->views;
+                $post->{'trendingIndicator'} = $activity / $post->hoursFromPublishing();
             }
-            $latestPosts = $latestPosts->sortByDesc('activity');
+            $latestPosts = $latestPosts->sortByDesc('trendingIndicator');
             $trendingPost = $latestPosts->first();
         }
 
@@ -230,7 +235,7 @@ class PostController extends Controller
             ->get();
 
         if (count($posts)) {
-            if (!$trendingPost) {
+            if (! $trendingPost) {
                 $trendingPost = $posts->shift();
             } else {
                 $posts->pop();
@@ -249,8 +254,11 @@ class PostController extends Controller
                 ->where('vote', '=', 2)
                 ->pluck('votes')
                 ->first();
-            $trendingPost->{'snippet'} = $trendingPost->body;
 
+            if (! isset($trendingPost->snippet)) {
+                $trendingPost->{'snippet'} = $trendingPost->body;
+            }
+            
             foreach ($posts as $post) {
                 $post->{'upvotes'} = DB::table('votes')
                     ->selectRaw('count(id) as votes')

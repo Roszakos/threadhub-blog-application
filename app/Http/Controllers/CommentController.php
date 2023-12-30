@@ -36,6 +36,10 @@ class CommentController extends Controller
             return !$request->user_id;
         });
 
+        if($validator->fails()) {
+            return response('data error', 422);
+        }
+
         $data = $validator->validated();
 
         return (Comment::create($data));
@@ -56,7 +60,7 @@ class CommentController extends Controller
         $comment->content = $data['content'];
         $comment->save();
 
-        return response('success', 200);
+        return response('success', 201);
     }
 
     public function destroy(Comment $comment, Request $request)

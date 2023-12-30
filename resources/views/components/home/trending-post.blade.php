@@ -6,7 +6,7 @@
             <div class="relative sm:h-[30rem] h-[25rem] bg-black/20 sm:rounded-[1rem] bg-cover bg-center group"
                 style="background-image: url({{ asset($trendingPost->image) }})">
             @else
-                <div class="relative sm:h-[30rem] h-[25rem] bg-black/20 sm:rounded-[1rem]">
+                <div class="relative sm:h-[30rem] h-[25rem] bg-black/20 sm:rounded-[1rem] group">
         @endif
         <div title="Views"
             class="absolute top-2 right-2 flex gap-1 z-10 text-white group-hover:bg-transparent transition duration-700 bg-black/70 py-1 px-2 rounded-[1.5rem]">
@@ -32,7 +32,7 @@
 
             <div class="flex text-xl gap-3 w-full justify-end items-end row-start-3">
                 <div>
-                    {{ $trendingPost->author }}
+                    {{ $trendingPost->user->nickname }}
                 </div>
                 <div>
                     {{ date('d-m-Y', strtotime($trendingPost->created_at)) }}

@@ -18,6 +18,8 @@ class Post extends Model
     use HasFactory;
     use HasSlug;
 
+    CONST HOUR_IN_SECONDS = 60 * 60;
+
     protected $fillable = [
         'user_id',
         'title',
@@ -41,6 +43,10 @@ class Post extends Model
     {
         $this->views++;
         return $this->save();
+    }
+
+    public function hoursFromPublishing() {
+        return round((time() - strtotime($this->created_at)) / self::HOUR_IN_SECONDS) + 1;
     }
 
     public function user(): BelongsTo

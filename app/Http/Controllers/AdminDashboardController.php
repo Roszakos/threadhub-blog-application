@@ -10,9 +10,9 @@ class AdminDashboardController extends Controller
 {
     public function show(Request $request)
     {
-        if ($request->user()->role !== 'admin') {
-            return redirect()->route('dashboard')->with('error', 'You don\'t have access to that page');
-        }
+        // if ($request->user()->role !== 'admin') {
+        //     return redirect()->route('dashboard')->with('error', 'You don\'t have access to that page');
+        // }
 
         $users = User::where('role', '=', 'user')
                     ->orderByDesc('created_at')

@@ -117,65 +117,67 @@
                 </div>
 
                 <template x-if="isSelected('users')">
-                    <table class="w-full table-fixed px-2 mt-3">
-                        <tr class="text-center">
-                            <th class="w-[6%] text-right pr-4">{{ __('ID') }}</th>
-                            <th class="w-[20%]">{{ __('Nickname') }}</th>
-                            <th class="w-[15%] hidden md:table-cell">{{ __('First name') }}</th>
-                            <th class="w-[15%] hidden md:table-cell">{{ __('Last name') }}</th>
-                            <th class="w-[19%] max-[420px]:hidden">{{ __('Registered') }}</th>
-                            <th class="w-[25%]">{{ __('Action') }}</th>
-                        </tr>
-                        @foreach ($users as $user)
-                            <tr class="border-t border-gray-300 text-center">
-                                <th class="text-right pr-4">{{ $user->id }}</th>
-                                <td>{{ $user->nickname }}</td>
-
-                                <td class="hidden md:table-cell">
-                                    @if ($user->first_name)
-                                        {{ $user->first_name }}
-                                    @else
-                                        {{ __('-') }}
-                                    @endif
-                                </td>
-
-                                <td class="hidden md:table-cell">
-                                    @if ($user->last_name)
-                                        {{ $user->last_name }}
-                                    @else
-                                        {{ __('-') }}
-                                    @endif
-                                </td>
-
-                                <td class="tabular-nums max-[420px]:hidden"
-                                    title="{{ date('d-m-Y H:i:s', strtotime($user->created_at)) }}">
-                                    <span>
-                                        {{ date('d-m-Y', strtotime($user->created_at)) }}
-                                    </span>
-                                    <span class="hidden lg:inline-block">
-                                        {{ date('H:i', strtotime($user->created_at)) }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <div class="flex flex-col sm:flex-row gap-2 justify-center">
-                                        <a href="{{ route('user.show', $user->id) }}">
-                                            <x-secondary-button class="!py-1">
-                                                {{ __('profile') }}
-                                            </x-secondary-button>
-                                        </a>
-                                        <div>
-                                            <x-danger-button class="!py-1"
-                                                x-on:click="userDeleteModal.showModal({{ $user->id }})">
-                                                {{ __('Delete') }}
-                                            </x-danger-button>
-                                        </div>
-                                    </div>
-                                </td>
+                    <div>
+                        <table class="w-full table-fixed px-2 mt-3">
+                            <tr class="text-center">
+                                <th class="w-[6%] text-right pr-4">{{ __('ID') }}</th>
+                                <th class="w-[20%]">{{ __('Nickname') }}</th>
+                                <th class="w-[15%] hidden md:table-cell">{{ __('First name') }}</th>
+                                <th class="w-[15%] hidden md:table-cell">{{ __('Last name') }}</th>
+                                <th class="w-[19%] max-[420px]:hidden">{{ __('Registered') }}</th>
+                                <th class="w-[25%]">{{ __('Action') }}</th>
                             </tr>
-                        @endforeach
-                    </table>
-                    <div class="px-2 mt-4">
-                        {{ $posts->links() }}
+                            @foreach ($users as $user)
+                                <tr class="border-t border-gray-300 text-center">
+                                    <th class="text-right pr-4">{{ $user->id }}</th>
+                                    <td>{{ $user->nickname }}</td>
+
+                                    <td class="hidden md:table-cell">
+                                        @if ($user->first_name)
+                                            {{ $user->first_name }}
+                                        @else
+                                            {{ __('-') }}
+                                        @endif
+                                    </td>
+
+                                    <td class="hidden md:table-cell">
+                                        @if ($user->last_name)
+                                            {{ $user->last_name }}
+                                        @else
+                                            {{ __('-') }}
+                                        @endif
+                                    </td>
+
+                                    <td class="tabular-nums max-[420px]:hidden"
+                                        title="{{ date('d-m-Y H:i:s', strtotime($user->created_at)) }}">
+                                        <span>
+                                            {{ date('d-m-Y', strtotime($user->created_at)) }}
+                                        </span>
+                                        <span class="hidden lg:inline-block">
+                                            {{ date('H:i', strtotime($user->created_at)) }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="flex flex-col sm:flex-row gap-2 justify-center">
+                                            <a href="{{ route('user.show', $user->id) }}">
+                                                <x-secondary-button class="!py-1">
+                                                    {{ __('profile') }}
+                                                </x-secondary-button>
+                                            </a>
+                                            <div>
+                                                <x-danger-button class="!py-1"
+                                                    x-on:click="userDeleteModal.showModal({{ $user->id }})">
+                                                    {{ __('Delete') }}
+                                                </x-danger-button>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </table>
+                        <div class="px-2 mt-4">
+                            {{ $users->links() }}
+                        </div>
                     </div>
                 </template>
 
@@ -245,5 +247,5 @@
 </x-app-layout>
 
 <style>
-    
+
 </style>

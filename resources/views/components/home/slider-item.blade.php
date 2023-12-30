@@ -5,7 +5,7 @@
             class="relative block w-full lg:h-[90%] h-[17rem] bg-black/20 rounded-[1rem] bg-cover bg-center group"
             style="background-image: url({{ asset($post->image) }})">
         @else
-            <a href="{{ route('post.view', $post->slug) }}" class="relative bg-black/20 rounded-[1rem] group">
+            <a href="{{ route('post.view', $post->slug) }}" class="relative block bg-black/20 w-full lg:h-[90%] h-[17rem] rounded-[1rem] group">
     @endif
     <div title="Views"
         class="absolute top-2 right-2 z-10 flex gap-1 transition duration-700 group-hover:bg-transparent text-white bg-black/30 py-1 px-2 rounded-[1.5rem]">

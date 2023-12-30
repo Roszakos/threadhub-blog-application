@@ -25,7 +25,7 @@ class PasswordResetTest extends TestCase
 
         $user = User::factory()->create();
 
-        $this->post('/forgot-password', ['email' => $user->email]);
+        $this->post('/forgot-password', ['email' => $user->email, 'token' => csrf_token()]);
 
         Notification::assertSentTo($user, ResetPassword::class);
     }

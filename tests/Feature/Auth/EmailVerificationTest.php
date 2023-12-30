@@ -62,4 +62,16 @@ class EmailVerificationTest extends TestCase
 
         $this->assertFalse($user->fresh()->hasVerifiedEmail());
     }
+
+    public function test_email_notification_is_sent(): void
+    {
+        $user = User::factory()->create([
+            'email_verified_at' => null,
+        ]);
+
+        $response = $this->actingAs($user)->post(route('verification.send'));
+
+        $response->assertSessionHas('status');
+        $this->assertSame(session('status'), 'verification-link-sent');
+    }
 }
