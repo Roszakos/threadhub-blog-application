@@ -11,18 +11,24 @@ Installation:
 1. Rename .env.example file to .env
 1. Fill .env file with your database information
 2. Open console and cd to project root directory (threadhub-blog-application-main)
-3. Run following commands
-```
-> composer install
+3. Run following commands:
 
-> npm install
+ - Install required dependencies
+    > composer install
 
-> php artisan key:generate
+    > npm install
 
-> php artisan migrate
+ - Generate application key
+    > php artisan key:generate
 
-> php artisan serve
+ - Run database migrations
+    > php artisan migrate
 
-> npm run dev
-```
-4. View the project at localhost:8000
+- You can seed the database with dummy data if you'd like to
+    > php artisan db:seed
+ 
+ - Run project
+    > php artisan serve
+
+    > npm run dev
+5. View the project at localhost:8000
