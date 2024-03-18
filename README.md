@@ -1,7 +1,8 @@
 # Thread hub
-### Blog web application where users can read and write articles, created with Laravel, Blade Templates and Alpine.js
+### Blog web application where users can read and write articles
+**Created with Laravel, Blade Templates and Alpine.js**
 
-**Run project locally**
+### Run project locally
 
 Requirements:
 - [Composer](https://getcomposer.org/download/)
