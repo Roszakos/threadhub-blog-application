@@ -1,5 +1,5 @@
 # Thread hub
-### Blog web application
+### Blog web application where users can read and write articles
 
 **Run project locally**
 
