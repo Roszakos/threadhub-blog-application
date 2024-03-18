@@ -6,8 +6,9 @@
 
 Requirements:
 - [Composer](https://getcomposer.org/download/)
-- PHP version 8.1 or newer
-- Node.js
+- [Git](https://git-scm.com/downloads)
+- [PHP](https://www.php.net/downloads.php) (version 8.1 or newer)
+- [Node.js](https://nodejs.org/en)
 
 Installation:
 1. Rename .env.example file to .env
