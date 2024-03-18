@@ -1,5 +1,5 @@
 # Thread hub
-### Blog web application where users can read and write articles
+### Blog web application where users can read and write articles, created with Laravel, Blade Templates and Alpine.js
 
 **Run project locally**
 
