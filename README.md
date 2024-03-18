@@ -7,6 +7,7 @@
 Requirements:
 - [Composer](https://getcomposer.org/download/)
 - PHP version 8.1 or newer
+- Node.js
 
 Installation:
 1. Rename .env.example file to .env
