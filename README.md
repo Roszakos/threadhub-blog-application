@@ -1,4 +1,4 @@
-### Blog web application where users can read and write articles, created with Laravel, Blade Templates and Alpine.js
+### Blog web application where users can read and write articles, created with Laravel, Blade Templates, TailwindCSS and Alpine.js
 
 ## Getting started
 **Requirements:**
