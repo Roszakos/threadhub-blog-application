@@ -32,7 +32,7 @@
 
             <div class="flex text-xl gap-3 w-full justify-end items-end row-start-3">
                 <div>
-                    {{ $trendingPost->user->nickname }}
+                    {{ $trendingPost->author }}
                 </div>
                 <div>
                     {{ date('d-m-Y', strtotime($trendingPost->created_at)) }}

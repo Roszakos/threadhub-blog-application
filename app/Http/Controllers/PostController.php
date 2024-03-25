@@ -212,6 +212,7 @@ class PostController extends Controller
 
         if ($trendingPost) {
             $excludeFromQuery = $trendingPost->id;
+            $trendingPost->{'author'} = $trendingPost->user->nickname;
         } else {
             $excludeFromQuery = null;
         }
@@ -236,7 +237,7 @@ class PostController extends Controller
         if (count($posts)) {
             if (! $trendingPost) {
                 $trendingPost = $posts->shift();
-            } else {
+            } else if (count($posts) === 4) {
                 $posts->pop();
             }
 

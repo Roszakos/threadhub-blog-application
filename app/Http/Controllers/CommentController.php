@@ -15,11 +15,11 @@ class CommentController extends Controller
         $validator = Validator::make($request->all(), [
             'post_id' => [
                 'required',
-                'exists:Posts,id'
+                'exists:posts,id'
             ],
             'user_id' => [
                 'nullable',
-                'exists:Users,id'
+                'exists:users,id'
             ],
             'content' => [
                 'required',
@@ -28,7 +28,7 @@ class CommentController extends Controller
             ],
             'parent_id' => [
                 'nullable',
-                'exists:Comments,id'
+                'exists:comments,id'
             ]
         ]);
 

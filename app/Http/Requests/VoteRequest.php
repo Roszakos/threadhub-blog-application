@@ -42,11 +42,11 @@ class VoteRequest extends FormRequest
             ],
             'post_id' => [
                 'required',
-                'exists:Posts,id'
+                'exists:posts,id'
             ],
             'user_id' => [
                 'required',
-                'exists:Users,id'
+                'exists:users,id'
             ]
         ];
     }
