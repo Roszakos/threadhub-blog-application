@@ -28,6 +28,10 @@
    
     `php artisan key:generate`
 
+ - Create storage symbolic link
+   
+    `php artisan storage:link`
+
  - Run database migrations
    
     `php artisan migrate`
