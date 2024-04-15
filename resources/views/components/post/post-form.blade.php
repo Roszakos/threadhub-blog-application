@@ -49,7 +49,7 @@
                 {{ __('Choose image') }}
             </label>
             <x-input-error :messages="$errors->get('image')" />
-                <input type="text" id="imageAction" name="imageAction" hidden value="false"/>
+            <input type="text" id="imageAction" name="imageAction" hidden value="false"/>
         </div>
 
         <div class="font-medium text-md mt-8 w-full md:w-3/4">

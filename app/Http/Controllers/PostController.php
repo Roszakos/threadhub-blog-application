@@ -213,6 +213,7 @@ class PostController extends Controller
         if ($trendingPost) {
             $excludeFromQuery = $trendingPost->id;
             $trendingPost->{'author'} = $trendingPost->user->nickname;
+            $trendingPost->{'authorImage'} = $trendingPost->user->image;
         } else {
             $excludeFromQuery = null;
         }
@@ -227,7 +228,8 @@ class PostController extends Controller
                 'posts.views',
                 'posts.slug',
                 'posts.created_at',
-                'users.nickname as author'
+                'users.nickname as author',
+                'users.image as authorImage'
             )
             ->whereNot('posts.id', '=', $excludeFromQuery)
             ->orderBy('created_at', 'desc')
