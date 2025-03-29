@@ -1,10 +1,8 @@
 ### Blog web application where users can read and write articles, created with Laravel, Blade Templates, TailwindCSS and Alpine.js
-**You can view the project [here](https://php.stealer.pl/threadhub/)**
 
 ## Getting started
 **Requirements:**
 - [Composer](https://getcomposer.org/download/)
-- [Git](https://git-scm.com/downloads)
 - [PHP](https://www.php.net/downloads.php) (version 8.1 or newer)
 - [Node.js](https://nodejs.org/en)
 
